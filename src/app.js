@@ -5,7 +5,9 @@ const session = require('express-session')
 const mongoose = require('mongoose')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
-const path = require('path');
+const path = require('path')
+
+const seedDB = require('./seed')
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -22,7 +24,10 @@ mongoose.connect(dbUrl, {
   useNewUrlParser: true,
 })
   .then(async () => {
-    console.log('DB Connected.');
+    console.log('DB Connected.')
+
+    // Seeding db with games and videogames when needed (and deleting all comments, reviews, ratings and lists)
+    // await seedDB()
 
     app.listen(port, () => {
       console.log(`Gameshare server listening at http://localhost:${port}`)
@@ -31,9 +36,9 @@ mongoose.connect(dbUrl, {
   .catch(err => {
     console.log(`DB Connection Error: ${err.message}`);
     process.exit(1);
-  });
+  })
 
 
 app.get("*", (req, res) =>{
   // Message error for later
-});
+})
