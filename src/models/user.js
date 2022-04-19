@@ -11,7 +11,7 @@ var userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    nickname: {
+    username: {
         type: String,
         required: true,
         unique: true

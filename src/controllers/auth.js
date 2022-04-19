@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
             //req.flash('error', 'The passwords do not match.')
             res.redirect('/register')
         } else {
-            const user_buffer = new User({ email: user.email, nickname: user.nickname })
+            const user_buffer = new User({ email: user.email, username: user.username })
             const new_user = await User.register(user_buffer, user.password)
             req.login(new_user, e => {
                 if (e) {
