@@ -64,7 +64,7 @@ mongoose.connect(dbUrl, {
     console.log('DB Connected.')
 
     // Seeding db with games and videogames when needed (and deleting all comments, reviews, ratings and lists)
-    // await seedDB()
+    await seedDB()
 
     app.listen(port, () => {
       console.log(`Gameshare server listening at http://localhost:${port}`)
