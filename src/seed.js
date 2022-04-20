@@ -1,10 +1,14 @@
 const mongoose = require('mongoose')
+const fetch = require('node-fetch')
 const User = require('./models/user')
 const Game = require('./models/game')
 const List = require('./models/list')
 const Rating = require('./models/rating')
 const Review = require('./models/review')
 const Comment = require('./models/comment')
+const { object } = require('webidl-conversions')
+const { type } = require('os')
+const { Console } = require('console')
 const { response } = require('express')
 
 const emptyDB = async () => {
@@ -32,7 +36,22 @@ const emptyDB = async () => {
 }
 
 const seedVideogames = async() => {
-    // SteamAPI call
+    // First, do the SteamAPI call for n games
+    const allIds = await fetch('https://raw.githubusercontent.com/dgibbs64/SteamCMD-AppID-List/master/steamcmd_appid.json').then(response => response.json())
+    const apps = allIds["applist"]["apps"]
+    // console.log(apps)
+    
+    const slicedIds = []
+    // Define n so we only look for the information of those n games
+    const n = 10
+    for (let i = 3; i < n; ++i){
+        slicedIds.push(JSON.stringify(apps[i].appid))
+    }
+    // console.log(slicedIds)
+  
+    // Now, get all the information available from the games we want
+    const dummyVideogames = []
+    for (let i = 0; i < slicedIds.length; ++i){
         const buffer = await fetch(`https://store.steampowered.com/api/appdetails?appids=${slicedIds[i]}`).then(response => response.json())
         // Then, get only the information we need corresponding to our model definition
         const gameData = buffer[slicedIds[i]]['data']
