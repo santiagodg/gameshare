@@ -24,17 +24,18 @@ const emptyDB = async () => {
         // await Game.deleteMany()
         // console.log("------ Games removed ------")
 
-        await List.deleteMany()
-        console.log("------ Lists removed ------")
-
         // await Rating.deleteMany()
         // console.log("------ Ratings removed ------")
 
         // await Review.deleteMany()
         // console.log("------ Reviews removed ------")
 
-        // await Comment.deleteMany()
-        // console.log("------ Comments removed ------")
+        await Comment.deleteMany()
+        console.log("------ Comments removed ------")
+
+        // await List.deleteMany()
+        // console.log("------ Lists removed ------")
+
     } catch (err) {
         console.log(err)
     }
@@ -231,7 +232,7 @@ const seedUsers = async() => {
 }
 
 // ==================
-// SEEDING LISTS
+// UTILIS NEEDED
 // ==================
 
 const userIds = []
@@ -264,12 +265,71 @@ const getCommentIds = async() => {
     // console.log(commentIds)
 }
 
-var dummyLists = []
-const seedLists = async() => {
+const generatingUtilis = async() => {
     await getUserIds()
     await getGameIds()
     await getCommentIds()
+}
 
+// ==================
+// SEEDING COMMENTS
+// ==================
+
+var dummyComments = []
+const seedComments = async() => {
+    dummyComments = [
+        {
+            text: "Hmm... I think this game does not fit in this list",
+            author: userIds[5]
+        },
+        {
+            text: "Dude, you get me :D",
+            author: userIds[6]
+        },
+        {
+            text: "I have reaaaally strong opinions about the games in this lists that I think should be noted. First of, playing them is not that great if you have no experience. Second, finding people that are willing to play is HARD. Third, they are all waaaay to expensive. Overall, not recommended if you want to actually have fun",
+            author: userIds[5]
+        },
+        {
+            text: "Great list bro!",
+            author: userIds[7]
+        },
+        {
+            text: "Seems a little incomplete and inconsistent to me",
+            author: userIds[8]
+        },
+        {
+            text: "You are my favorite user honestly, this list is awesome!",
+            author: userIds[3]
+        },
+        {
+            text: "Good recs!",
+            author: userIds[7]
+        },
+        {
+            text: "First",
+            author: userIds[7]
+        },
+        {
+            text: "Not first lol",
+            author: userIds[3]
+        },
+        {
+            text: "Dont mind me, just taking notes ;)",
+            author: userIds[5]
+        },
+    ]
+
+    const comments = await Comment.create(dummyComments)
+}
+
+
+// ==================
+// SEEDING LISTS
+// ==================
+
+var dummyLists = []
+const seedLists = async() => {
     dummyLists = [
         {
             name: "My favorite games",
@@ -328,8 +388,13 @@ const seedDB = async() => {
         // const boardgames = await seedBoardgames()
         // console.log("++++++ Boardgames added ++++++")
 
-        const lists = await seedLists()
-        console.log("++++++ Lists added ++++++")
+        const utilis = await generatingUtilis()
+
+        const comments = await seedComments()
+        console.log("++++++ Comments added ++++++")
+
+        // const lists = await seedLists()
+        // console.log("++++++ Lists added ++++++")
 
     } catch (err){
         console.log(err)
