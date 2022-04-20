@@ -14,7 +14,10 @@ var gameSchema = new mongoose.Schema({
         default: true
     },
     description: String,
-    avgRating: Number,
+    avgRating: {
+        type: Number,
+        default: null
+    },
     ratings: [
         {
             type: mongoose.Schema.Types.ObjectId,
