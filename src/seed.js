@@ -12,29 +12,37 @@ const { type } = require('os')
 const { Console } = require('console')
 const { response } = require('express')
 
+// ==================
+// EMPTYING DB
+// ==================
+
 const emptyDB = async () => {
     try {
         // await User.deleteMany()
         // console.log("------ Users removed ------")
 
-        await Game.deleteMany()
-        console.log("------ Games removed ------")
+        // await Game.deleteMany()
+        // console.log("------ Games removed ------")
 
         await List.deleteMany()
         console.log("------ Lists removed ------")
 
-        await Rating.deleteMany()
-        console.log("------ Ratings removed ------")
+        // await Rating.deleteMany()
+        // console.log("------ Ratings removed ------")
 
-        await Review.deleteMany()
-        console.log("------ Reviews removed ------")
+        // await Review.deleteMany()
+        // console.log("------ Reviews removed ------")
 
-        await Comment.deleteMany()
-        console.log("------ Comments removed ------")
+        // await Comment.deleteMany()
+        // console.log("------ Comments removed ------")
     } catch (err) {
         console.log(err)
     }
 }
+
+// ==================
+// SEEDING VIDEOGAMES
+// ==================
 
 const seedVideogames = async() => {
     // First, do the SteamAPI call for n games
@@ -63,6 +71,10 @@ const seedVideogames = async() => {
 
     const videogames = await Game.create(dummyVideogames)
 }
+
+// ==================
+// SEEDING BOARDGAMES
+// ==================
 
 const dummyBoardgames = [
     {
@@ -151,6 +163,10 @@ const seedBoardgames = async() => {
     const boardgames = await Game.create(dummyBoardgames)
 }
 
+// ==================
+// SEEDING USERS
+// ==================
+
 const dummyUsers = [
     {
         isAdmin: true,
@@ -214,17 +230,107 @@ const seedUsers = async() => {
     }
 }
 
+// ==================
+// SEEDING LISTS
+// ==================
+
+const userIds = []
+const getUserIds = async() => {
+    const n = await User.countDocuments()
+    const queries = await User.find().sort({_id: -1}).limit(n)
+    for( let i = 0; i < n; ++i){
+        userIds.push(queries[i]._id)
+    }
+    // console.log(userIds)
+}
+
+const gameIds = []
+const getGameIds = async() => {
+    const n = await Game.countDocuments()
+    const queries = await Game.find().sort({_id: -1}).limit(n)
+    for( let i = 0; i < n; ++i){
+        gameIds.push(queries[i]._id)
+    }
+    // console.log(gameIds)
+}
+
+const commentIds = []
+const getCommentIds = async() => {
+    const n = await Comment.countDocuments()
+    const queries = await Comment.find().sort({_id: -1}).limit(n)
+    for( let i = 0; i < n; ++i){
+        commentIds.push(queries[i]._id)
+    }
+    // console.log(commentIds)
+}
+
+var dummyLists = []
+const seedLists = async() => {
+    await getUserIds()
+    await getGameIds()
+    await getCommentIds()
+
+    dummyLists = [
+        {
+            name: "My favorite games",
+            description: "I like all the games added here!",
+            likes: [userIds[1]],
+            games: [gameIds[0], gameIds[1]],
+            comments: [],
+            author: userIds[0]
+        },
+        {
+            name: "The ones I hate the most",
+            description: "Terrible, horrifying, disgusting, truly a let down of a game.",
+            likes: [userIds[2], userIds[3], userIds[4]],
+            games: [gameIds[2], gameIds[3], gameIds[4], gameIds[5], gameIds[6], gameIds[7]],
+            comments: [],
+            author: userIds[0]
+        },
+        {
+            name: "For spending days playing",
+            description: "There are some games that can be completed within a couple of minutes or even hours, but BEHOLD! Here are some games that take so much time to finish or master because of how complex they are.",
+            likes: [],
+            games: [gameIds[8], gameIds[9], gameIds[10]],
+            comments: [],
+            author: userIds[0]
+        },
+        {
+            name: "Family destroyers",
+            description: "",
+            likes: [userIds[3]],
+            games: [gameIds[12], gameIds[13], gameIds[14], gameIds[15], gameIds[16], gameIds[17]],
+            comments: [],
+            author: userIds[1]
+        },
+        {
+            name: "Games that I have no idea where I bought them",
+            description: "",
+            likes: [userIds[0], userIds[3], userIds[4], userIds[5], userIds[6], userIds[7]],
+            games: [gameIds[1], gameIds[12], gameIds[5], gameIds[7], gameIds[3], gameIds[0]],
+            comments: [],
+            author: userIds[1]
+        },
+    ]
+
+    const lists = await List.create(dummyLists)
+}
+
 const seedDB = async() => {
     await emptyDB()
     try{
-        const videogames = await seedVideogames()
-        console.log("++++++ Videogames added ++++++")
-        
-        const boardgames = await seedBoardgames()
-        console.log("++++++ Boardgames added ++++++")
+        // const users = await seedUsers()
+        // console.log("++++++ Users added ++++++")
 
-        const users = await seedUsers()
-        console.log("++++++ Users added ++++++")
+        // const videogames = await seedVideogames()
+        // console.log("++++++ Videogames added ++++++")
+        
+        // const boardgames = await seedBoardgames()
+        // console.log("++++++ Boardgames added ++++++")
+
+        const lists = await seedLists()
+        console.log("++++++ Lists added ++++++")
+
     } catch (err){
         console.log(err)
     }
