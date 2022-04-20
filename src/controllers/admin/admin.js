@@ -12,7 +12,7 @@ router.get("/", isAdmin, async (_, res) => {
 });
 
 router.get("/games", isAdmin, async (_, res) => {
-    const [games, gamesError] = await handle(GameModel.find());
+    const [games, gamesError] = await handle(GameModel.find().exec());
 
     if (gamesError) {
         console.log(gamesError);
@@ -24,10 +24,12 @@ router.get("/games", isAdmin, async (_, res) => {
 });
 
 router.post('/games', isAdmin, async function (req, res) {
-    console.log(req.body)
+    if (!('name' in req.body) || !('image' in req.body)) {
+        return res.status(400).send("'name' and 'image' properties must be set on body of request")
+    }
 
     // Check if it already exists
-    let [existentGame, existentError] = await handle(GameModel.findOne({ name: req.body.name }));
+    const [existentGame, existentError] = await handle(GameModel.findOne({ name: req.body.name }).exec());
     if (existentError) {
         console.log(existentError);
         return res.status(500).send(existentError);
@@ -38,24 +40,20 @@ router.post('/games', isAdmin, async function (req, res) {
     }
 
     const game = new GameModel(req.body);
-
     const [_, gameSaveError] = await handle(game.save());
 
     if (gameSaveError) {
         console.log(gameSaveError);
-
-        return res.send(500).send(gameSaveError);
+        return res.status(500).send(gameSaveError);
     }
 
-    console.log("saved game successfully")
-
-    [existentGame, existentError] = await handle(GameModel.findOne({ name: req.body.name }))
-    if (existentError) {
-        console.log(existentError);
-        return res.status(500).send(existentError);
+    const [existent1Game, existent1Error] = await handle(GameModel.findOne({ name: req.body.name }).exec())
+    if (existent1Error) {
+        console.log(existent1Error);
+        return res.status(500).send(existent1Error);
     }
 
-    res.send(existentGame)
+    res.send(existent1Game)
 })
 
 router.put('/games/:gameID', isAdmin, async function (req, res) {
@@ -70,18 +68,22 @@ router.put('/games/:gameID', isAdmin, async function (req, res) {
     game.name = req.body.name;
 
     // Check if it already exists
-    let [existentGame, existentError] = await handle(GameModel.findOne({ name: game.name }));
+    const [existentGame, existentError] = await handle(GameModel.findOne({ name: game.name }).exec());
     if (existentError) {
         console.log(existentError);
         return res.status(500).send(existentError);
     }
     if (existentGame !== null && !existentGame._id.equals(req.params.gameID)) {
-        req.flash('error', 'A game with that name already exists.')
+        // req.flash('error', 'A game with that name already exists.')
         return res.redirect('back')
     }
 
     game.image = req.body.image;
-    game.tags = req.body.tags;
+    game.isVideogame = req.body.isVideogame;
+    game.description = req.body.description;
+    game.avgRating = req.body.avgRating;
+    game.ratings = req.body.ratings;
+    game.reviews = req.body.reviews;
     game.deleted = req.body.deleted;
 
     [game, gameError] = await handle(game.save());
@@ -92,23 +94,23 @@ router.put('/games/:gameID', isAdmin, async function (req, res) {
         return res.status(400).send(gameError);
     }
 
-    [existentGame, existentError] = await handle(GameModel.findOne({ name: req.body.name }))
-    if (existentError) {
-        console.log(existentError);
-        return res.status(500).send(existentError);
+    const [existent1Game, existent1Error] = await handle(GameModel.findOne({ name: req.body.name }).exec())
+    if (existent1Error) {
+        console.log(existent1Error);
+        return res.status(500).send(existent1Error);
     }
 
-    res.send(existentGame)
+    res.send(existent1Game)
 })
 
-// router.delete('/games/:gameID', isAdmin, async (req, res) => {
-//     const opResult = await GameModel.deleteOne({ _id: req.params.gameID }, { deleted: true });
+router.delete('/games/:gameID', isAdmin, async (req, res) => {
+    const opResult = await GameModel.deleteOne({ _id: req.params.gameID }).exec();
 
-//     if (opResult.modifiedCount < 1) {
-//         return res.status(404).redirect('/admin/games');
-//     }
+    if (opResult.modifiedCount < 1) {
+        return res.status(404).redirect('/admin/games');
+    }
 
-//     res.redirect('/admin/games');
-// });
+    res.sendStatus(200);
+});
 
 module.exports = router;
