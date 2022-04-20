@@ -59,7 +59,7 @@ router.get('/login', (req, res) => {
 })
 
 // Validate login information and start session
-router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
+router.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => {
     console.log("Logged in")
     //req.flash('success', 'Welcome back, ' + req.user.username + '!');
     // TO-DO: Add directory

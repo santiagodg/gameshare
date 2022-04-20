@@ -11,6 +11,8 @@ const path = require('path')
 const User = require('./models/user')
 
 const auth = require('./controllers/auth')
+const home = require('./controllers/home')
+const admin = require('./controllers/admin/admin')
 
 const seedDB = require('./seed')
 
@@ -22,6 +24,7 @@ app.set('view engine', 'ejs')
 
 //app.use(flash())
 
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 const secret = process.env.SESSION_SECRET || 'k298%4UEdh4*G#IUNs'
@@ -51,7 +54,9 @@ app.use((req, res, next) => {
   next();
 })
 
+app.use('/', home)
 app.use('/', auth)
+app.use('/admin', admin)
 
 app.use(express.static('src/views/public'))
 
