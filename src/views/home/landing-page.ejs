@@ -1,19 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include (".././partials/header") %>
+  <!-- TODO: remove styles from html and put them on the CSS file -->
+  <%- include (".././partials/loginNavbar") %>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-  <title>GameShare</title>
-</head>
+    <div class="jumbotron my-5 mx-auto w-75 h-100" style="background-color: #04293A;">
+      <h1 class="display-4 text-light">Welcome to GameShare!</h1>
+      <p class="lead text-white-50">The all-in-one platform to share your gamelists to the community.</p>
+      <hr class="my-4">
+      <div id="carouselExampleIndicators" class="carousel slide w-100 mx-auto" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img class="d-block w-100" src="images/slides/s1.jpeg" alt="First slide">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Tutorial 1</h5>
+              <p>Tutorial 1 description</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="images/slides/s2.jpeg" alt="Second slide">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Tutorial 2</h5>
+              <p>Tutorial 2 description</p>
+            </div>
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </div>
 
-<body>
-  <ul>
-    <li><a href="/login">Login</a></li>
-    <li><a href="/register">Register</a></li>
-  </ul>
-</body>
-
-</html>
+    <%- include (".././partials/footer") %>

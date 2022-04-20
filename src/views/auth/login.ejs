@@ -1,19 +1,54 @@
-<!DOCTYPE html><!doctype html>
-<html lang="en">
+<%- include (".././partials/header") %>
+    <%- include (".././partials/loginNavbar") %>
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>GameShare | Login</title>
-</head>
+        <section class="gradient-custom" style="background-color: #28869e;">
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                            <div class="card-body p-5 text-center">
 
-<body>
-    <form action='/login' method='POST'>
-        <input type="user" placeholder="Username" name="username" required>
-        <input type="password" placeholder="Password" name="password" required>
-        <button>Login</button>
-    </form>
-</body>
+                                <div class="container">
+                                    <a>
+                                        <img src="/images/logo.png" height="50" alt="">
+                                    </a>
+                                </div>
+                                <div class="mt-md-4 pb-5">
 
-</html>
+                                    <p class="h1 font-weight-bold">Login</p>
+                                    <p class="text-white-50 mb-5">Enter your username and password</p>
+
+                                    <form action="/login" method="POST">
+                                        <div class="form-outline form-white mb-4">
+                                            <label class="form-label" for="username"
+                                                style="float: left;">Username</label>
+                                            <input type="username" id="username" name="username"
+                                                class="form-control form-control-lg" required />
+
+                                        </div>
+
+                                        <div class="form-outline form-white mb-4">
+                                            <label class="form-label" for="password"
+                                                style="float: left;">Password</label>
+                                            <input type="password" id="password" name="password"
+                                                class="form-control form-control-lg" required />
+
+                                        </div>
+
+                                        <button class="btn btn-outline-light btn-lg px-5" type="submit"
+                                            style="margin-left: 0; margin-right: auto;">Log in</button>
+                                    </form>
+                                </div>
+
+                                <div>
+                                    <p class="mb-0">Doesn't have an account? <a href="/register"
+                                            class="text-white-50 fw-bold">Register here</a></p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <%- include (".././partials/footer") %>
