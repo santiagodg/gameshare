@@ -1,5 +1,5 @@
-<%- include (".././global/header") %>
-<%- include (".././global/loginNavbar") %>
+<%- include (".././partials/header") %>
+    <%- include (".././partials/loginNavbar") %>
         <section class="gradient-custom" style="background-color: #28869e;">
             <div class="container py-5 h-100">
                 <div class="row d-flex justify-content-center align-items-center h-100">
@@ -21,14 +21,16 @@
                                         <div class="form-outline form-white mb-4">
                                             <label class="form-label" for="name" style="float: left;">Nombre</label>
                                             <input type="text" id="name" name="user[username]"
-                                                class="form-control form-control-lg" placeholder="Juan Pérez" required/>
+                                                class="form-control form-control-lg" placeholder="Juan Pérez"
+                                                required />
 
                                         </div>
 
                                         <div class="form-outline form-white mb-4">
                                             <label class="form-label" for="email" style="float: left;">Email</label>
                                             <input type="email" id="email" name="user[email]"
-                                                class="form-control form-control-lg" placeholder="mail@gmail.com" required/>
+                                                class="form-control form-control-lg" placeholder="mail@gmail.com"
+                                                required />
 
                                         </div>
 
@@ -36,7 +38,7 @@
                                             <label class="form-label" for="password"
                                                 style="float: left;">Password</label>
                                             <input type="password" id="password" name="user[password]"
-                                                class="form-control form-control-lg" placeholder="••••••••" required/>
+                                                class="form-control form-control-lg" placeholder="••••••••" required />
 
                                         </div>
 
@@ -44,7 +46,7 @@
                                             <label class="form-label" for="Confirm Password"
                                                 style="float: left;">Confirm Password</label>
                                             <input type="password" id="Confirm Password" name="user[confirm_password]"
-                                                class="form-control form-control-lg" placeholder="••••••••" required/>
+                                                class="form-control form-control-lg" placeholder="••••••••" required />
 
                                         </div>
 
@@ -64,4 +66,4 @@
                 </div>
             </div>
         </section>
-        <%- include (".././global/footer") %>
+        <%- include (".././partials/footer") %>
