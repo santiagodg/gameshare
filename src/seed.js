@@ -4,6 +4,7 @@ const User = require('./models/user')
 const Game = require('./models/game')
 const List = require('./models/list')
 const Rating = require('./models/rating')
+const Like = require('./models/like')
 const Review = require('./models/review')
 const Comment = require('./models/comment')
 const passport = require('passport')
@@ -24,8 +25,11 @@ const emptyDB = async () => {
         // await Game.deleteMany()
         // console.log("------ Games removed ------")
 
-        await Rating.deleteMany()
-        console.log("------ Ratings removed ------")
+        // await Rating.deleteMany()
+        // console.log("------ Ratings removed ------")
+
+        await Like.deleteMany()
+        console.log("------ Likes removed ------")
 
         // await Review.deleteMany()
         // console.log("------ Reviews removed ------")
@@ -33,8 +37,8 @@ const emptyDB = async () => {
         // await Comment.deleteMany()
         // console.log("------ Comments removed ------")
 
-        // await List.deleteMany()
-        // console.log("------ Lists removed ------")
+        await List.deleteMany()
+        console.log("------ Lists removed ------")
 
     } catch (err) {
         console.log(err)
@@ -265,10 +269,21 @@ const getCommentIds = async() => {
     // console.log(commentIds)
 }
 
+const likeIds = []
+const getLikeIds = async() => {
+    const n = await Like.countDocuments()
+    const queries = await Like.find().sort({_id: 1}).limit(n)
+    for( let i = 0; i < n; ++i){
+        likeIds.push(queries[i]._id)
+    }
+    // console.log(likeIds)
+}
+
 const generatingUtilis = async() => {
     await getUserIds()
     await getGameIds()
     await getCommentIds()
+    await getLikeIds()
 }
 
 // ==================
@@ -324,8 +339,9 @@ const seedComments = async() => {
 }
 
 // ==================
-// SEEDING REVIEWS
+// SEEDING RATINGS
 // ==================
+
 var dummyRatings = []
 const seedRatings = async() => {
     dummyRatings = [
@@ -367,6 +383,62 @@ const seedRatings = async() => {
 }
 
 // ==================
+// SEEDING LIKES
+// ==================
+
+var dummyLikes = []
+const seedLikes = async() => {
+    dummyLikes = [
+        {
+            liked: true,
+            author: userIds[1]
+        },
+        {
+            liked: true,
+            author: userIds[2]
+        },
+        {
+            liked: true,
+            author: userIds[3]
+        },
+        {
+            liked: true,
+            author: userIds[4]
+        },
+        {
+            liked: true,
+            author: userIds[3]
+        },
+        {
+            liked: true,
+            author: userIds[0]
+        },
+        {
+            liked: true,
+            author: userIds[3]
+        },
+        {
+            liked: true,
+            author: userIds[4]
+        },
+        {
+            liked: true,
+            author: userIds[5]
+        },
+        {
+            liked: true,
+            author: userIds[6]
+        },
+        {
+            liked: true,
+            author: userIds[7]
+        },
+    ]
+
+    const likes = Like.create(dummyLikes)
+}
+
+// ==================
 // SEEDING REVIEWS
 // ==================
 
@@ -383,7 +455,6 @@ const seedRatings = async() => {
 //     const reviews = await Review.create(dummyReviews)
 // }
 
-
 // ==================
 // SEEDING LISTS
 // ==================
@@ -394,7 +465,7 @@ const seedLists = async() => {
         {
             name: "My favorite games",
             description: "I like all the games added here!",
-            likes: [userIds[1]],
+            likes: [likeIds[0]],
             games: [gameIds[0], gameIds[1]],
             comments: [],
             author: userIds[0]
@@ -402,7 +473,7 @@ const seedLists = async() => {
         {
             name: "The ones I hate the most",
             description: "Terrible, horrifying, disgusting, truly a let down of a game.",
-            likes: [userIds[2], userIds[3], userIds[4]],
+            likes: [likeIds[1], likeIds[2], likeIds[3]],
             games: [gameIds[2], gameIds[3], gameIds[4], gameIds[5], gameIds[6], gameIds[7]],
             comments: [],
             author: userIds[0]
@@ -418,7 +489,7 @@ const seedLists = async() => {
         {
             name: "Family destroyers",
             description: "",
-            likes: [userIds[3]],
+            likes: [likeIds[4]],
             games: [gameIds[12], gameIds[13], gameIds[14], gameIds[15], gameIds[16], gameIds[17]],
             comments: [],
             author: userIds[1]
@@ -426,7 +497,7 @@ const seedLists = async() => {
         {
             name: "Games that I have no idea where I bought them",
             description: "",
-            likes: [userIds[0], userIds[3], userIds[4], userIds[5], userIds[6], userIds[7]],
+            likes: [likeIds[5], likeIds[6], likeIds[7], likeIds[8], likeIds[9], likeIds[10]],
             games: [gameIds[1], gameIds[12], gameIds[5], gameIds[7], gameIds[3], gameIds[0]],
             comments: [],
             author: userIds[1]
@@ -448,19 +519,22 @@ const seedDB = async() => {
         // const boardgames = await seedBoardgames()
         // console.log("++++++ Boardgames added ++++++")
 
+        const likes = await seedLikes()
+        console.log("++++++ Likes added ++++++")
+
         const utilis = await generatingUtilis()
 
-        // const comments = await seedComments()
-        // console.log("++++++ Comments added ++++++")
-
-        // const rating = await seedRatings()
+        // const ratings = await seedRatings()
         // console.log("++++++ Ratings added ++++++")
 
         // const reviews = await seedReviews()
         // console.log("++++++ Reviews added ++++++")
 
-        // const lists = await seedLists()
-        // console.log("++++++ Lists added ++++++")
+        // const comments = await seedComments()
+        // console.log("++++++ Comments added ++++++")
+
+        const lists = await seedLists()
+        console.log("++++++ Lists added ++++++")
 
     } catch (err){
         console.log(err)
