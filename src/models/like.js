@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 var likeSchema = mongoose.Schema({
-    score: {
+    liked: {
         type: Boolean,
         required: false
     },

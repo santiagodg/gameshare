@@ -24,14 +24,14 @@ const emptyDB = async () => {
         // await Game.deleteMany()
         // console.log("------ Games removed ------")
 
-        // await Rating.deleteMany()
-        // console.log("------ Ratings removed ------")
+        await Rating.deleteMany()
+        console.log("------ Ratings removed ------")
 
         // await Review.deleteMany()
         // console.log("------ Reviews removed ------")
 
-        await Comment.deleteMany()
-        console.log("------ Comments removed ------")
+        // await Comment.deleteMany()
+        // console.log("------ Comments removed ------")
 
         // await List.deleteMany()
         // console.log("------ Lists removed ------")
@@ -323,6 +323,66 @@ const seedComments = async() => {
     const comments = await Comment.create(dummyComments)
 }
 
+// ==================
+// SEEDING REVIEWS
+// ==================
+var dummyRatings = []
+const seedRatings = async() => {
+    dummyRatings = [
+        {
+            score: 5,
+            author: userIds[0]
+        },
+        {
+            score: 5,
+            author: userIds[0]
+        },
+        {
+            score: 0,
+            author: userIds[0]
+        },
+        {
+            score: 1,
+            author: userIds[0]
+        },
+        {
+            score: 2,
+            author: userIds[0]
+        },
+        {
+            score: 1,
+            author: userIds[0]
+        },
+        {
+            score: 0,
+            author: userIds[0]
+        },
+        {
+            score: 0,
+            author: userIds[0]
+        }
+    ]
+
+    const ratings = await Rating.create(dummyRatings)
+}
+
+// ==================
+// SEEDING REVIEWS
+// ==================
+
+// var dummyReviews = []
+// const seedReviews = async() => {
+//     dummyReviews = [
+//         {
+//             text: "",
+//             rating: "",
+//             author: ""
+//         },
+//     ]
+
+//     const reviews = await Review.create(dummyReviews)
+// }
+
 
 // ==================
 // SEEDING LISTS
@@ -390,8 +450,14 @@ const seedDB = async() => {
 
         const utilis = await generatingUtilis()
 
-        const comments = await seedComments()
-        console.log("++++++ Comments added ++++++")
+        // const comments = await seedComments()
+        // console.log("++++++ Comments added ++++++")
+
+        // const rating = await seedRatings()
+        // console.log("++++++ Ratings added ++++++")
+
+        // const reviews = await seedReviews()
+        // console.log("++++++ Reviews added ++++++")
 
         // const lists = await seedLists()
         // console.log("++++++ Lists added ++++++")
