@@ -25,17 +25,17 @@ const emptyDB = async () => {
         // await Game.deleteMany()
         // console.log("------ Games removed ------")
 
-        await Like.deleteMany()
-        console.log("------ Likes removed ------")
+        // await Like.deleteMany()
+        // console.log("------ Likes removed ------")
 
-        await Rating.deleteMany()
-        console.log("------ Ratings removed ------")
+        // await Rating.deleteMany()
+        // console.log("------ Ratings removed ------")
 
-        await Comment.deleteMany()
-        console.log("------ Comments removed ------")
+        // await Comment.deleteMany()
+        // console.log("------ Comments removed ------")
 
-        await Review.deleteMany()
-        console.log("------ Reviews removed ------")
+        // await Review.deleteMany()
+        // console.log("------ Reviews removed ------")
 
         await List.deleteMany()
         console.log("------ Lists removed ------")
@@ -289,7 +289,6 @@ const getRatingIds = async() => {
     // console.log(ratingwIds)
 }
 
-
 const generatingIdsMainFeatures = async() => {
     await getUserIds()
     await getGameIds()
@@ -299,103 +298,6 @@ const generatingIdsSecondary = async() => {
     await getCommentIds()
     await getLikeIds()
     await getRatingIds()
-}
-
-
-// ==================
-// SEEDING COMMENTS
-// ==================
-
-var dummyComments = []
-const seedComments = async() => {
-    dummyComments = [
-        {
-            text: "Hmm... I think the games do not fit in this list",
-            author: userIds[5]
-        },
-        {
-            text: "Dude, you get me :D",
-            author: userIds[6]
-        },
-        {
-            text: "I have reaaaally strong opinions about the games in this lists that I think should be noted. First of, playing them is not that great if you have no experience. Second, finding people that are willing to play is HARD. Third, they are all waaaay to expensive. Overall, not recommended if you want to actually have fun",
-            author: userIds[5]
-        },
-        {
-            text: "Great list bro!",
-            author: userIds[7]
-        },
-        {
-            text: "Seems a little incomplete and inconsistent to me",
-            author: userIds[8]
-        },
-        {
-            text: "You are my favorite user honestly, this list is awesome!",
-            author: userIds[3]
-        },
-        {
-            text: "Good recs!",
-            author: userIds[7]
-        },
-        {
-            text: "First",
-            author: userIds[7]
-        },
-        {
-            text: "Not first lol",
-            author: userIds[3]
-        },
-        {
-            text: "Dont mind me, just taking notes ;)",
-            author: userIds[5]
-        },
-    ]
-
-    const comments = await Comment.create(dummyComments)
-}
-
-// ==================
-// SEEDING RATINGS
-// ==================
-
-var dummyRatings = []
-const seedRatings = async() => {
-    dummyRatings = [
-        {
-            score: 5,
-            author: userIds[0]
-        },
-        {
-            score: 5,
-            author: userIds[0]
-        },
-        {
-            score: 0,
-            author: userIds[0]
-        },
-        {
-            score: 1,
-            author: userIds[0]
-        },
-        {
-            score: 2,
-            author: userIds[0]
-        },
-        {
-            score: 1,
-            author: userIds[0]
-        },
-        {
-            score: 0,
-            author: userIds[0]
-        },
-        {
-            score: 0,
-            author: userIds[0]
-        }
-    ]
-
-    const ratings = await Rating.create(dummyRatings)
 }
 
 // ==================
@@ -452,6 +354,103 @@ const seedLikes = async() => {
     ]
 
     const likes = Like.create(dummyLikes)
+}
+
+
+// ==================
+// SEEDING RATINGS
+// ==================
+
+var dummyRatings = []
+const seedRatings = async() => {
+    dummyRatings = [
+        {
+            score: 5,
+            author: userIds[0]
+        },
+        {
+            score: 5,
+            author: userIds[0]
+        },
+        {
+            score: 0,
+            author: userIds[0]
+        },
+        {
+            score: 1,
+            author: userIds[0]
+        },
+        {
+            score: 2,
+            author: userIds[0]
+        },
+        {
+            score: 1,
+            author: userIds[0]
+        },
+        {
+            score: 0,
+            author: userIds[0]
+        },
+        {
+            score: 0,
+            author: userIds[0]
+        }
+    ]
+
+    const ratings = await Rating.create(dummyRatings)
+}
+
+// ==================
+// SEEDING COMMENTS
+// ==================
+
+var dummyComments = []
+const seedComments = async() => {
+    dummyComments = [
+        {
+            text: "Hmm... I think the games do not fit in this list",
+            author: userIds[5]
+        },
+        {
+            text: "Dude, you get me :D",
+            author: userIds[6]
+        },
+        {
+            text: "I have reaaaally strong opinions about the games in this lists that I think should be noted. First of, playing them is not that great if you have no experience. Second, finding people that are willing to play is HARD. Third, they are all waaaay to expensive. Overall, not recommended if you want to actually have fun",
+            author: userIds[5]
+        },
+        {
+            text: "Great list bro!",
+            author: userIds[7]
+        },
+        {
+            text: "Seems a little incomplete and inconsistent to me",
+            author: userIds[8]
+        },
+        {
+            text: "You are my favorite user honestly, this list is awesome!",
+            author: userIds[3]
+        },
+        {
+            text: "Good recs!",
+            author: userIds[7]
+        },
+        {
+            text: "First",
+            author: userIds[7]
+        },
+        {
+            text: "Not first lol",
+            author: userIds[3]
+        },
+        {
+            text: "Dont mind me, just taking notes ;)",
+            author: userIds[5]
+        },
+    ]
+
+    const comments = await Comment.create(dummyComments)
 }
 
 // ==================
@@ -552,19 +551,19 @@ const seedDB = async() => {
 
         const mainUtilis = await generatingIdsMainFeatures()
 
-        const likes = await seedLikes()
-        console.log("++++++ Likes added ++++++")
+        // const likes = await seedLikes()
+        // console.log("++++++ Likes added ++++++")
 
-        const ratings = await seedRatings()
-        console.log("++++++ Ratings added ++++++")
+        // const ratings = await seedRatings()
+        // console.log("++++++ Ratings added ++++++")
 
-        const comments = await seedComments()
-        console.log("++++++ Comments added ++++++")
+        // const comments = await seedComments()
+        // console.log("++++++ Comments added ++++++")
 
         const secondaryUtilis = await generatingIdsSecondary()
 
-        const reviews = await seedReviews()
-        console.log("++++++ Reviews added ++++++")
+        // const reviews = await seedReviews()
+        // console.log("++++++ Reviews added ++++++")
 
         const lists = await seedLists()
         console.log("++++++ Lists added ++++++")
