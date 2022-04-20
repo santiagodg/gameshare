@@ -6,6 +6,7 @@ const List = require('./models/list')
 const Rating = require('./models/rating')
 const Review = require('./models/review')
 const Comment = require('./models/comment')
+const passport = require('passport')
 const { object } = require('webidl-conversions')
 const { type } = require('os')
 const { Console } = require('console')
@@ -150,6 +151,69 @@ const seedBoardgames = async() => {
     const boardgames = await Game.create(dummyBoardgames)
 }
 
+const dummyUsers = [
+    {
+        isAdmin: true,
+        email: 'mainadmin@email.com',
+        username: 'mainAdmin',
+        password: '53cret!'
+    },
+    {
+        isAdmin: true,
+        email: 'incharge@email.com',
+        username: 'theboss',
+        password: 'overPaid'
+    },
+    {
+        email: 'regularuser@email.com',
+        username: 'regular_user',
+        password: 'normal'
+    },
+    {
+        email: 'damian@email.com',
+        username: 'damian',
+        password: '!vengance'
+    },
+    {
+        email: 'hq@email.com',
+        username: 'HarleenQ',
+        password: 'redBlack'
+    },
+    {
+        email: 'ivy@email.com',
+        username: 'Poi$on_Ivy',
+        password: 'trees4Life'
+    },
+    {
+        email: 'harveydent@email.com',
+        username: 'h4l5_n_h4lf',
+        password: 'heads'
+    },
+    {
+        email: 'jasontodd@email.com',
+        username: 'REDMASK',
+        password: 'NOMERCY'
+    },
+    {
+        email: 'oswald@email.com',
+        username: 'Mr.penguin',
+        password: '$$$'
+    },
+    {
+        email: 'selenakyle@email.com',
+        username: 'Cat',
+        password: 'freedom'
+    }
+
+]
+
+const seedUsers = async() => {
+    for (let i = 0; i < dummyUsers.length; ++i){
+        const user_buffer = new User(dummyUsers[i])
+        const new_user = await User.register(user_buffer, dummyUsers[i].password)
+    }
+}
+
 const seedDB = async() => {
     await emptyDB()
     try{
@@ -158,6 +222,9 @@ const seedDB = async() => {
         
         const boardgames = await seedBoardgames()
         console.log("++++++ Boardgames added ++++++")
+
+        const users = await seedUsers()
+        console.log("++++++ Users added ++++++")
     } catch (err){
         console.log(err)
     }
