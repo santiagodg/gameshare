@@ -6,10 +6,12 @@ var listSchema = new mongoose.Schema({
         required: true
     },
     description: String,
-    likes: {
-        type: Number,
-        default: 0
-    },
+    likes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Like"
+        }
+    ],
     games: [
         {
             type: mongoose.Schema.Types.ObjectId,
