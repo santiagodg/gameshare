@@ -22,20 +22,20 @@ const emptyDB = async () => {
         // await User.deleteMany()
         // console.log("------ Users removed ------")
 
-        // await Game.deleteMany()
-        // console.log("------ Games removed ------")
+        await Game.deleteMany()
+        console.log("------ Games removed ------")
 
-        // await Like.deleteMany()
-        // console.log("------ Likes removed ------")
+        await Like.deleteMany()
+        console.log("------ Likes removed ------")
 
-        // await Rating.deleteMany()
-        // console.log("------ Ratings removed ------")
+        await Rating.deleteMany()
+        console.log("------ Ratings removed ------")
 
-        // await Comment.deleteMany()
-        // console.log("------ Comments removed ------")
+        await Comment.deleteMany()
+        console.log("------ Comments removed ------")
 
-        // await Review.deleteMany()
-        // console.log("------ Reviews removed ------")
+        await Review.deleteMany()
+        console.log("------ Reviews removed ------")
 
         await List.deleteMany()
         console.log("------ Lists removed ------")
@@ -497,7 +497,7 @@ const seedLists = async() => {
             description: "I like all the games added here!",
             likes: [likeIds[0]],
             games: [gameIds[0], gameIds[1]],
-            comments: [],
+            comments: [commentIds[0], commentIds[1], commentIds[2], commentIds[3]],
             author: userIds[0]
         },
         {
@@ -505,7 +505,7 @@ const seedLists = async() => {
             description: "Terrible, horrifying, disgusting, truly a let down of a game.",
             likes: [likeIds[1], likeIds[2], likeIds[3]],
             games: [gameIds[2], gameIds[3], gameIds[4], gameIds[5], gameIds[6], gameIds[7]],
-            comments: [],
+            comments: [commentIds[4], commentIds[5]],
             author: userIds[0]
         },
         {
@@ -513,7 +513,7 @@ const seedLists = async() => {
             description: "There are some games that can be completed within a couple of minutes or even hours, but BEHOLD! Here are some games that take so much time to finish or master because of how complex they are.",
             likes: [],
             games: [gameIds[8], gameIds[9], gameIds[10]],
-            comments: [],
+            comments: [commentIds[6], commentIds[7]],
             author: userIds[0]
         },
         {
@@ -529,7 +529,7 @@ const seedLists = async() => {
             description: "",
             likes: [likeIds[5], likeIds[6], likeIds[7], likeIds[8], likeIds[9], likeIds[10]],
             games: [gameIds[1], gameIds[12], gameIds[5], gameIds[7], gameIds[3], gameIds[0]],
-            comments: [],
+            comments: [commentIds[8], commentIds[9]],
             author: userIds[1]
         },
     ]
@@ -543,27 +543,27 @@ const seedDB = async() => {
         // const users = await seedUsers()
         // console.log("++++++ Users added ++++++")
 
-        // const videogames = await seedVideogames()
-        // console.log("++++++ Videogames added ++++++")
+        const videogames = await seedVideogames()
+        console.log("++++++ Videogames added ++++++")
         
-        // const boardgames = await seedBoardgames()
-        // console.log("++++++ Boardgames added ++++++")
+        const boardgames = await seedBoardgames()
+        console.log("++++++ Boardgames added ++++++")
 
         const mainUtilis = await generatingIdsMainFeatures()
 
-        // const likes = await seedLikes()
-        // console.log("++++++ Likes added ++++++")
+        const likes = await seedLikes()
+        console.log("++++++ Likes added ++++++")
 
-        // const ratings = await seedRatings()
-        // console.log("++++++ Ratings added ++++++")
+        const ratings = await seedRatings()
+        console.log("++++++ Ratings added ++++++")
 
-        // const comments = await seedComments()
-        // console.log("++++++ Comments added ++++++")
+        const comments = await seedComments()
+        console.log("++++++ Comments added ++++++")
 
         const secondaryUtilis = await generatingIdsSecondary()
 
-        // const reviews = await seedReviews()
-        // console.log("++++++ Reviews added ++++++")
+        const reviews = await seedReviews()
+        console.log("++++++ Reviews added ++++++")
 
         const lists = await seedLists()
         console.log("++++++ Lists added ++++++")
