@@ -1,0 +1,10 @@
+<h1>Create New List</h1>
+<strong>Games</strong>
+    <ul>
+      <% if(games){ %>
+        <% games.forEach(game => { %>
+          <li> <%= game.name %> </li>
+      <% }) %>
+      <% } %>
+      </ul>
+  </ul>
