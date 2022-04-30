@@ -11,10 +11,8 @@
         <form action ='/list' method="POST">
             <input type="text" name="name" placeholder="List Name" required="required">
             <textarea name="description" placeholder="Description"></textarea>
-            <% var gamesSelected = [] %>
-            <% for(var i = 0; i < gamesSelected.length; ++i){ %>
-                <input type="hidden" name="games[i]" value="gamesSelected[i]">
-            <% } %>
+            <div id="selected-games" name="selectedGames">
+            </div>
             <button type="submit">Create</button>
         </form>
       <% } %>
@@ -23,18 +21,24 @@
   <script>
       var gamesForList = []
       function updateGameToList(gameId){
-        // If it is already stored, that means we want to remove it, otherwise add it
         const index = gamesForList.indexOf(gameId)
         var buttonUpdate = document.getElementById(`button-game-${gameId}`)
-        console.log(buttonUpdate)
+        // If it was found, then we want to remove it from the list
         if(index != -1){
             buttonUpdate.value = "Select"
             buttonUpdate.innerText = "Select"
             gamesForList.splice(index, 1)
+            
+            var deselectedGame = document.getElementById(`selected-game-${gameId}`)
+            deselectedGame.remove()
+        // Otherwise, add it
         }else{
             buttonUpdate.value = "Deselect"
             buttonUpdate.innerText = "Deselect"
             gamesForList.push(gameId)
+            
+            var selectedGames = document.getElementById("selected-games")            
+            selectedGames.innerHTML = selectedGames.innerHTML + `<input type="hidden" id="selected-game-${gameId}" name="games[${gameId}]" value="${gameId}">`
         }
         // console.log(gamesForList)
       }

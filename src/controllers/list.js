@@ -5,6 +5,7 @@ const { isLoggedIn } = require('../middleware')
 const { handle } = require('./util/util')
 const Game = require('../models/game')
 const List = require('../models/list')
+const game = require('../models/game')
 
 var router = express.Router()
 
@@ -24,7 +25,6 @@ router.get('/new', isLoggedIn, async (req, res) =>{
 router.post('/', isLoggedIn, async (req, res) =>{
     // Verify that list with that name does not exist for this author
     const [exists, existsError] = await handle(List.findOne({ author : req.user._id, name : req.body.name }))
-    
     if(existsError){
         return res.status(500).render('server-error')
     }
@@ -35,10 +35,20 @@ router.post('/', isLoggedIn, async (req, res) =>{
         return res.redirect('back')
     }
 
-    const list = new List(req.body)
-    list.author = req.user._id
-    const [newList, error] = await handle(list.save())
+    // Else, create list
+    const list = new List({ name : req.body.name, description : req.body.description, author : req.user._id })
 
+    // Passing ids from selectedGames to the actual list
+    const selectedGames = req.body.games
+    var gameIds = []
+    // console.log(selectedGames)
+    for(var i in selectedGames){
+        gameIds.push(selectedGames[i])
+    }
+    console.log(gameIds)
+    list.games = gameIds
+    
+    const [newList, error] = await handle(list.save())
     if(error){
         console.log(error)
         return res.status(400).render('bad-request')
