@@ -13,6 +13,7 @@ const User = require('./models/user')
 const auth = require('./controllers/auth')
 const home = require('./controllers/home')
 const admin = require('./controllers/admin/admin')
+const list = require('./controllers/list')
 
 const seedDB = require('./seed')
 
@@ -58,6 +59,7 @@ app.use((req, res, next) => {
 app.use('/', home)
 app.use('/', auth)
 app.use('/admin', admin)
+app.use('/list', list)
 
 app.use(express.static('src/views/public'))
 
