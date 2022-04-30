@@ -3,7 +3,7 @@
     <ul>
       <% if(games){ %>
         <% games.forEach(game => { %>
-          <li> <%= game.name %> </li>
+          <li> <%= game.name %>  <button onclick="updateGameToList('<%= game._id %>')" id="button-game-<%= game._id %>" value="Select">Select</button> </li>
       <% }) %>
       <% } %>
       </ul>
@@ -11,7 +11,31 @@
         <form action ='/list' method="POST">
             <input type="text" name="name" placeholder="List Name" required="required">
             <textarea name="description" placeholder="Description"></textarea>
+            <% var gamesSelected = [] %>
+            <% for(var i = 0; i < gamesSelected.length; ++i){ %>
+                <input type="hidden" name="games[i]" value="gamesSelected[i]">
+            <% } %>
             <button type="submit">Create</button>
         </form>
       <% } %>
   </ul>
+
+  <script>
+      var gamesForList = []
+      function updateGameToList(gameId){
+        // If it is already stored, that means we want to remove it, otherwise add it
+        const index = gamesForList.indexOf(gameId)
+        var buttonUpdate = document.getElementById(`button-game-${gameId}`)
+        console.log(buttonUpdate)
+        if(index != -1){
+            buttonUpdate.value = "Select"
+            buttonUpdate.innerText = "Select"
+            gamesForList.splice(index, 1)
+        }else{
+            buttonUpdate.value = "Deselect"
+            buttonUpdate.innerText = "Deselect"
+            gamesForList.push(gameId)
+        }
+        // console.log(gamesForList)
+      }
+  </script>
