@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games | GameShare</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+</head>
+<body class="bg-dark text-white">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-3">
+                <img class="w-100 shadow" src="<%= game.image %>">
+            </div>
+            <div class="col-9">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="d-inline-block"><%= game.name %></h1>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-8">
+                        <p><%= game.description %></p>
+                    </div>
+                    <div class="col-4 text-center">
+                        <% if (user) { %>
+                            <div class="bg-secondary rounded shadow p-3">
+                                <form action="/games/<%= game._id %>/rating" method="POST">
+                                    <input type="hidden" name="author" value="<%= user._id %>">
+                                    <label for="rating-score">Rate</label>
+                                    <input id="rating-score" name="score" type="number" min="1" max="5">
+                                    <input type="submit">
+                                </form>
+                                <a class="btn btn-primary mt-4" href="/games/<%= game._id %>/review">Review</a>
+                            </div>
+                        <% } %>
+                        <% if (game.avgRating !== null) { %>
+                            <div>
+                                <p class="mt-4 mb-0">Rating</p>
+                                <p class="display-4"><%= game.avgRating %></p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                <% if (game.reviews.length !== 0) { %>
+                    <div class="row mt-4">
+                        <div class="col">
+                            <h2>Reviews</h2>
+                            <% game.reviews.forEach(review => { %>
+                                <div class="my-4">
+                                    <p class="mb-2">
+                                        <span>Reviewed by</span>
+                                        <span class="font-weight-bold">&nbsp;&nbsp;<%= review.author.username %></span>
+                                        <span>&nbsp;&nbsp;⭐<%= review.rating.score %></span>
+                                    </p>
+                                    <p><%= review.text %></p>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+.game:hover {
+    box-sizing: border-box;
+    border: 3px solid rgb(82, 255, 47) !important;
+}

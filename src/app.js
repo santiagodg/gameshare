@@ -15,6 +15,7 @@ const auth = require('./controllers/auth')
 const home = require('./controllers/home')
 const admin = require('./controllers/admin/admin')
 const list = require('./controllers/list')
+const games = require('./controllers/games')
 
 const seedDB = require('./seed')
 
@@ -62,6 +63,7 @@ app.use('/', home)
 app.use('/', auth)
 app.use('/admin', admin)
 app.use('/list', list)
+app.use('/games', games)
 
 app.use(express.static('src/views/public'))
 
