@@ -14,7 +14,7 @@ router.get('/', isLoggedIn, async (req, res) =>{
 })
 
 router.get('/new', isLoggedIn, async (req, res) =>{
-    const [games, gamesError] = await handle(Game.find().sort({ name: 1 }))
+    const [games, gamesError] = await handle(Game.find().sort({ name : 1 }).populate(['ratings', 'reviews']).exec())
     if(gamesError){
         return res.status(500).render('server-error')
     }

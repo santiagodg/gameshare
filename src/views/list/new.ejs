@@ -1,7 +1,7 @@
 <h1>Create New List</h1>
 <strong>Games</strong>
     <ul>
-      <% if(games){ %>
+      <% if(games && games.length > 0){ %>
         <% games.forEach(game => { %>
           <li> <%= game.name %>  <button onclick="updateGameToList('<%= game._id %>')" id="button-game-<%= game._id %>" value="Select">Select</button> </li>
       <% }) %>

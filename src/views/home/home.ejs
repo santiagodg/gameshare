@@ -14,7 +14,7 @@
     <li><a href="/admin">Admin</a></li>
     <strong>Lists</strong>
     <ul>
-      <% if(current_user && lists){ %>
+      <% if(current_user && lists && lists.length > 0){ %>
         <% lists.forEach(list => { %>
           <li> <%= list.name %> </li>
       <% }) %>
