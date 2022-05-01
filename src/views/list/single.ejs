@@ -11,6 +11,10 @@
 
 <body>
 <h3><%= list.name %></h3>
+<form action="/list/<%= list._id %>/comments/new" method="POST">
+    <textarea name="comment" placeholder="Write your comment here..." required="required"></textarea>
+    <button type="submit" name="listOfComment" value="<%= list._id %>">Post</button>
+</form>
 <% list.comments.forEach(comment => { %>
     <div><%= comment.text %> <div> by <%= comment.author.username %></div></div>
     <form action ='/list/<%= list._id %>/comments/<%= comment._id %>?_method=DELETE' method="POST">

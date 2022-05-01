@@ -62,7 +62,7 @@ router.post('/', isLoggedIn, async (req, res) =>{
 // Show all attributes of a list in a single page
 router.get('/:id', isLoggedIn, async (req, res) => {
     // Because we need the author information for the comments, we use a separate populate to fill the data of the nested attribute of author
-    const [list, listError] = await handle(List.findOne({ _id : req.params.id }).populate(['author', 'likes', 'games', 'comments']).populate({ path : 'comments', populate : { path : 'author'} }).exec())
+    const [list, listError] = await handle(List.findOne({ _id : req.params.id }).populate(['author', 'likes', 'games', 'comments']).populate({ path : 'comments', populate : { path : 'author'}, options: { sort: { 'createdAt': 'desc' } } }).exec())
     if (listError) {
         return res.status(400).render('bad-request')
     }
