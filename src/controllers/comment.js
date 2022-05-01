@@ -8,6 +8,26 @@ const Comment = require('../models/comment')
 
 var router = express.Router()
 
+// Create a new comment in the list
+router.post('/new', isLoggedIn, async (req, res) => {
+    const comment = new Comment({ text : req.body.comment })
+    comment.author = req.user._id
+
+    const [newComment, newError] = await handle(comment.save())
+    if (newError) {
+        return res.status(400).render('bad-request')
+    }
+
+    const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id : req.body.listOfComment }, { $push : { comments : newComment } }, { new : true }))
+    if (errorUpdate) {
+        return res.status(400).render('bad-request')
+    }
+
+    // req.flash('success', 'Comment added successfully.');
+    res.redirect(`/list/${req.body.listOfComment}`)
+
+})
+
 // Delete comment from list
 router.delete('/:commentId', isLoggedIn, isCommentAuthorOrAdmin, async (req, res) => {
     const commentId = req.params.commentId
