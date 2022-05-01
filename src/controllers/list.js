@@ -5,7 +5,7 @@ const { isLoggedIn } = require('../middleware')
 const { handle } = require('./util/util')
 const Game = require('../models/game')
 const List = require('../models/list')
-const game = require('../models/game')
+const Like = require('../models/like')
 
 var router = express.Router()
 
@@ -57,6 +57,32 @@ router.post('/', isLoggedIn, async (req, res) =>{
     // req.flash('List added successfully.')
     res.redirect('/list')
     // res,redirect('/')
+})
+
+// Update like/dislike attribute of a list
+router.post('/:id', isLoggedIn, async (req, res) =>{
+    const likeState = req.body.like
+    if (likeState != undefined) {
+        if (likeState == "addNew") {
+            const like = await Like.create({ liked : true, author : req.user._id })
+            const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id : req.params.id }, { $push : { likes : like } }, { new : true }))
+            if (errorUpdate) {
+                return res.status(400).render('bad-request')
+            }
+        } else {
+            const likeId = req.body.like
+            const [disliked, errorDisliked] = await handle(Like.findOneAndDelete({ _id : likeId }))
+            if (errorDisliked) {
+                return res.status(400).render('bad-request')
+            }
+            const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id : req.params.id }, { $pull : { likes : likeId } }, { new : true}))
+            if (errorUpdate) {
+                console.log(errorUpdate)
+                return res.status(400).render('bad-request')
+            }
+        }
+        res.redirect('/')
+    }
 })
 
 module.exports = router
