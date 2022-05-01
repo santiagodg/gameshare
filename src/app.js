@@ -7,6 +7,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 //const flash = require("connect-flash")
 const path = require('path')
+const methodOverride = require('method-override')
 
 const User = require('./models/user')
 
@@ -28,6 +29,7 @@ app.use(express.static('public'));
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 
 const secret = process.env.SESSION_SECRET || 'k298%4UEdh4*G#IUNs'
 const sessionConfig = {
@@ -62,6 +64,8 @@ app.use('/admin', admin)
 app.use('/list', list)
 
 app.use(express.static('src/views/public'))
+
+app.use(methodOverride('_method'))
 
 const dbUrl = process.env.DB_URL || "mongodb://localhost/gameshare"
 mongoose.connect(dbUrl, {

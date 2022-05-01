@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+  <title>GameShare</title>
+</head>
+
+<body>
+<h3><%= list.name %></h3>
+<% list.comments.forEach(comment => { %>
+    <div><%= comment.text %> <div> by <%= comment.author.username %></div></div>
+    <form action ='/list/<%= list._id %>/comments/<%= comment._id %>?_method=DELETE' method="POST">
+        <button type="submit" name="listOfComment" value="<%= list._id %>">Delete</button>
+    </form>
+<% }) %>
+
+</body>
+
+</html>

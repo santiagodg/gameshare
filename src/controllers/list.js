@@ -6,6 +6,7 @@ const { handle } = require('./util/util')
 const Game = require('../models/game')
 const List = require('../models/list')
 const Like = require('../models/like')
+const CommentController = require('./comment')
 
 var router = express.Router()
 
@@ -50,7 +51,6 @@ router.post('/', isLoggedIn, async (req, res) =>{
     
     const [newList, error] = await handle(list.save())
     if(error){
-        console.log(error)
         return res.status(400).render('bad-request')
     }
 
@@ -59,8 +59,18 @@ router.post('/', isLoggedIn, async (req, res) =>{
     // res,redirect('/')
 })
 
+// Show all attributes of a list in a single page
+router.get('/:id', isLoggedIn, async (req, res) => {
+    // Because we need the author information for the comments, we use a separate populate to fill the data of the nested attribute of author
+    const [list, listError] = await handle(List.findOne({ _id : req.params.id }).populate(['author', 'likes', 'games', 'comments']).populate({ path : 'comments', populate : { path : 'author'} }).exec())
+    if (listError) {
+        return res.status(400).render('bad-request')
+    }
+    res.render('list/single', { list : list })
+})
+
 // Update like/dislike attribute of a list
-router.post('/:id', isLoggedIn, async (req, res) =>{
+router.post('/:id', isLoggedIn, async (req, res) => {
     const likeState = req.body.like
     if (likeState != undefined) {
         if (likeState == "addNew") {
@@ -75,7 +85,7 @@ router.post('/:id', isLoggedIn, async (req, res) =>{
             if (errorDisliked) {
                 return res.status(400).render('bad-request')
             }
-            const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id : req.params.id }, { $pull : { likes : likeId } }, { new : true}))
+            const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id : req.params.id }, { $pull : { likes : likeId } }, { new : true }))
             if (errorUpdate) {
                 console.log(errorUpdate)
                 return res.status(400).render('bad-request')
@@ -84,5 +94,8 @@ router.post('/:id', isLoggedIn, async (req, res) =>{
         res.redirect('/')
     }
 })
+
+// Adding comment routes
+router.use('/:id/comments/', CommentController)
 
 module.exports = router
