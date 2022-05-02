@@ -1,45 +1,53 @@
-<h1>Create New List</h1>
-<strong>Games</strong>
-    <ul>
-      <% if(games && games.length > 0){ %>
-        <% games.forEach(game => { %>
-          <li> <%= game.name %>  <button onclick="updateGameToList('<%= game._id %>')" id="button-game-<%= game._id %>" value="Select">Select</button> </li>
-      <% }) %>
-      <% } %>
-      </ul>
-      <% if(current_user){ %>
-        <form action ='/list' method="POST">
-            <input type="text" name="name" placeholder="List Name" required="required">
-            <textarea name="description" placeholder="Description"></textarea>
-            <div id="selected-games" name="selectedGames">
-            </div>
-            <button type="submit">Create</button>
-        </form>
-      <% } %>
-  </ul>
-
-  <script>
-      var gamesForList = []
-      function updateGameToList(gameId){
-        const index = gamesForList.indexOf(gameId)
-        var buttonUpdate = document.getElementById(`button-game-${gameId}`)
-        // If it was found, then we want to remove it from the list
-        if(index != -1){
-            buttonUpdate.value = "Select"
-            buttonUpdate.innerText = "Select"
-            gamesForList.splice(index, 1)
-            
-            var deselectedGame = document.getElementById(`selected-game-${gameId}`)
-            deselectedGame.remove()
-        // Otherwise, add it
-        }else{
-            buttonUpdate.value = "Deselect"
-            buttonUpdate.innerText = "Deselect"
-            gamesForList.push(gameId)
-            
-            var selectedGames = document.getElementById("selected-games")            
-            selectedGames.innerHTML = selectedGames.innerHTML + `<input type="hidden" id="selected-game-${gameId}" name="games[${gameId}]" value="${gameId}">`
-        }
-        // console.log(gamesForList)
+<%- include (".././partials/header") %>
+<%- include (".././partials/navbar") %>
+<div class="container py-5 h-100 main text-white">
+  <div class="row">
+    <div class="col">
+      <h1>Create New List</h1>
+      <strong>Games</strong>
+          <ul>
+            <% if(games && games.length > 0){ %>
+              <% games.forEach(game => { %>
+                <li> <%= game.name %>  <button onclick="updateGameToList('<%= game._id %>')" id="button-game-<%= game._id %>" value="Select">Select</button> </li>
+            <% }) %>
+            <% } %>
+            </ul>
+            <% if(current_user){ %>
+              <form action ='/list' method="POST">
+                  <input type="text" name="name" placeholder="List Name" required="required">
+                  <textarea name="description" placeholder="Description"></textarea>
+                  <div id="selected-games" name="selectedGames">
+                  </div>
+                  <button type="submit">Create</button>
+              </form>
+            <% } %>
+        </ul>
+    </div>
+  </div>
+</div>
+<script>
+    var gamesForList = []
+    function updateGameToList(gameId){
+      const index = gamesForList.indexOf(gameId)
+      var buttonUpdate = document.getElementById(`button-game-${gameId}`)
+      // If it was found, then we want to remove it from the list
+      if(index != -1){
+          buttonUpdate.value = "Select"
+          buttonUpdate.innerText = "Select"
+          gamesForList.splice(index, 1)
+          
+          var deselectedGame = document.getElementById(`selected-game-${gameId}`)
+          deselectedGame.remove()
+      // Otherwise, add it
+      }else{
+          buttonUpdate.value = "Deselect"
+          buttonUpdate.innerText = "Deselect"
+          gamesForList.push(gameId)
+          
+          var selectedGames = document.getElementById("selected-games")            
+          selectedGames.innerHTML = selectedGames.innerHTML + `<input type="hidden" id="selected-game-${gameId}" name="games[${gameId}]" value="${gameId}">`
       }
-  </script>
+      // console.log(gamesForList)
+    }
+</script>
+<%- include (".././partials/footer") %>
