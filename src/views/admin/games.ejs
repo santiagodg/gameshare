@@ -1,120 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>Manage Games | GameShare</title>
-
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
-<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
-</head>
-<body>
-    <div class="container my-5 flex-grow-1">
+<%- include (".././partials/header") %>
+<%- include (".././partials/navbar") %>
+<div class="container py-5 h-100 main text-white">
         <h1 class="text-center my-4">Manage Games</h1>
-        <div id="jsGrid"></div>
+        <div id="jsGrid" class="text-body"></div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <script>
-        const games = <%- JSON.stringify(games) %>
+<script>
+    const games = <%- JSON.stringify(games) %>
 
-        $("#jsGrid").jsGrid({
-            fields: [
-                {
-                    type: "text",
-                    name: "name",
-                    title: "Name",
-                    align: "center",
-                    css: "text-break",
-                },
-                {
-                    type: "text",
-                    name: "image",
-                    title: "Image",
-                    align: "center",
-                    css: "text-break",
-                },
-                {
-                    type: "checkbox",
-                    name: "isVideogame",
-                    title: "IsVideogame",
-                    align: "center",
-                },
-                {
-                    type: "text",
-                    name: "description",
-                    title: "Description",
-                    align: "center",
-                    css: "text-break",
-                    width: 300,
-                },
-                {
-                    type: "number",
-                    name: "avgRating",
-                    title: "AvgRating",
-                    align: "center",
-                },
-                {
-                    type: "checkbox",
-                    name: "deleted",
-                    title: "Deleted",
-                    align: "center",
-                },
-                {
-                    type: "control",
-                },
-            ],
+    $("#jsGrid").jsGrid({
+        fields: [
+            {
+                type: "text",
+                name: "name",
+                title: "Name",
+                align: "center",
+                css: "text-break",
+            },
+            {
+                type: "text",
+                name: "image",
+                title: "Image",
+                align: "center",
+                css: "text-break",
+            },
+            {
+                type: "checkbox",
+                name: "isVideogame",
+                title: "IsVideogame",
+                align: "center",
+            },
+            {
+                type: "text",
+                name: "description",
+                title: "Description",
+                align: "center",
+                css: "text-break",
+                width: 300,
+            },
+            {
+                type: "number",
+                name: "avgRating",
+                title: "AvgRating",
+                align: "center",
+            },
+            {
+                type: "checkbox",
+                name: "deleted",
+                title: "Deleted",
+                align: "center",
+            },
+            {
+                type: "control",
+            },
+        ],
 
-            autoload: true,
+        autoload: true,
 
-            controller: {
-                loadData: (filter) => {
-                    console.log("loading data")
-                    return games
-                },
-
-                insertItem: async (item) => {
-                    response = await axios.post('/admin/games', item)
-
-                    if (response.status !== 200) {
-                        return Promise.reject()
-                    }
-
-                    inserted_item = response.data
-                    return Promise.resolve(inserted_item)
-                },
-
-                updateItem: async (item) => {
-                    response = await axios.put(`/admin/games/${item._id}`, item)
-
-                    if (response.status !== 200) {
-                        return Promise.reject()
-                    }
-
-                    updated_item = response.data
-                    return Promise.resolve(updated_item)
-                },
-
-                deleteItem: async (item) => {
-                    response = await axios.delete(`/admin/games/${item._id}`, item)
-
-                    if (response.status !== 200) {
-                        return Promise.reject()
-                    }
-
-                    return Promise.resolve()
-                }
+        controller: {
+            loadData: (filter) => {
+                console.log("loading data")
+                return games
             },
 
-            width: '100%',
-            inserting: true,
-            editing: true,
-        })
-    </script>
-</body>
-</html>
+            insertItem: async (item) => {
+                response = await axios.post('/admin/games', item)
+
+                if (response.status !== 200) {
+                    return Promise.reject()
+                }
+
+                inserted_item = response.data
+                return Promise.resolve(inserted_item)
+            },
+
+            updateItem: async (item) => {
+                response = await axios.put(`/admin/games/${item._id}`, item)
+
+                if (response.status !== 200) {
+                    return Promise.reject()
+                }
+
+                updated_item = response.data
+                return Promise.resolve(updated_item)
+            },
+
+            deleteItem: async (item) => {
+                response = await axios.delete(`/admin/games/${item._id}`, item)
+
+                if (response.status !== 200) {
+                    return Promise.reject()
+                }
+
+                return Promise.resolve()
+            }
+        },
+
+        width: '100%',
+        inserting: true,
+        editing: true,
+    })
+</script>
+<%- include (".././partials/footer") %>
