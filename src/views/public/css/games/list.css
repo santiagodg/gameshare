@@ -1,4 +1,11 @@
+.game {
+    transition: border 0.1s, padding 0.1s;
+    border: 1px solid white;
+    padding: 2px;
+}
+
 .game:hover {
     box-sizing: border-box;
-    border: 3px solid rgb(82, 255, 47) !important;
+    border: 3px solid var(--secondary) !important;
+    padding: 0;
 }
