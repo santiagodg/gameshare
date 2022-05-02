@@ -1,0 +1,87 @@
+:root {
+    --bg-color: rgb(18, 18, 18);
+    --bg-color-1: rgba(255, 255, 255, 0.05);
+    --bg-color-2: rgba(255, 255, 255, 0.10);
+    --bg-color-3: rgba(255, 255, 255, 0.15);
+    --primary: rgb(239, 154, 154) !important;
+    --primary-50: rgba(239, 154, 154, 0.5) !important;
+    --secondary: rgb(211, 47, 47) !important;
+}
+
+html,
+body {
+    height: 100vh;
+}
+
+a {
+    color: var(--primary);
+}
+
+a:hover {
+    color: var(--secondary);
+}
+
+body {
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    background-color: var(--bg-color-3);
+}
+
+.hero {
+    background-color: var(--bg-color-1);
+}
+
+.navbar {
+    background-color: var(--bg-color-3);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:active {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+.btn-outline-primary:focus {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    box-shadow: 0 0 0 0.2rem var(--primary-50)
+}
+
+.btn-primary {
+    color: #000;
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover,
+.btn-primary:active {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+.btn-primary:focus {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    box-shadow: 0 0 0 0.2rem var(--primary-50)
+}
+
+.main {
+    flex-grow: 1;
+}
+
+.login {
+    background-color: var(--bg-color-1);
+}
