@@ -96,13 +96,18 @@ router.post('/:id', isLoggedIn, async (req, res) => {
 })
 
 // Soft delete list
-router.post('/:id/toggle-softdelete', isAdmin, async (req, res) => {
+router.post('/:id/toggle-softdelete', isLoggedIn, async (req, res) => {
     const [foundList, foundListError] = await handle(List.findOne({ _id: req.params.id }))
 
     if (foundListError) {
         console.log(foundListError)
         res.status(400).render('bad-request')
         return
+    }
+
+    if (!(req.user.isAdmin || req.user._id === foundList.author._id)) {
+        console.log(`ListRouter.post(${req.params.id}): User (${req.user._id}) must be admin or author of list.`)
+        res.status(403).render('bad-request')
     }
 
     foundList.deleted = !foundList.deleted
