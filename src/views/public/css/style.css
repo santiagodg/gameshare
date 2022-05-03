@@ -139,3 +139,11 @@ footer {
     color: var(--font-color-medium);
     background-color: #1e1e1e;
 }
+
+.game-rate-box {
+    background-color: var(--bg-color-1);
+}
+
+.dropdown-divider {
+    border-top: 1px solid var(--font-color-disabled)
+}
