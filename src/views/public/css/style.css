@@ -6,11 +6,28 @@
     --primary: rgb(239, 154, 154) !important;
     --primary-50: rgba(239, 154, 154, 0.5) !important;
     --secondary: rgb(211, 47, 47) !important;
+    --font-color-emphasis: rgba(255, 255, 255, 0.87);
+    --font-color-medium: rgba(255, 255, 255, 0.60);
+    --font-color-disabled: rgba(255, 255, 255, 0.38);
+}
+
+::placeholder {
+    color: var(--font-color-disabled);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--font-color-emphasis)
 }
 
 html,
 body {
     min-height: 100vh;
+    color: var(--font-color-medium)
 }
 
 a {
@@ -84,4 +101,27 @@ footer {
 
 .login {
     background-color: var(--bg-color-1);
+}
+
+.form-control {
+    color: var(--font-color-medium);
+    background-color: var(--bg-color-1);
+    transition: background-color 0.1s;
+}
+
+.form-control:focus {
+    color: var(--font-color-medium);
+    background-color: var(--bg-color-2);
+}
+
+.game {
+    transition: border 0.1s, padding 0.1s;
+    border: 1px solid white;
+    padding: 2px;
+}
+
+.game:hover {
+    box-sizing: border-box;
+    border: 3px solid var(--secondary) !important;
+    padding: 0;
 }
