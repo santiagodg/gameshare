@@ -48,6 +48,11 @@ footer {
     background-color: var(--bg-color-3);
 }
 
+/* option {
+    color: var(--font-color-medium);
+    background-color: var(--bg-color-1);
+} */
+
 .hero {
     background-color: var(--bg-color-1);
 }
@@ -124,4 +129,13 @@ footer {
     box-sizing: border-box;
     border: 3px solid var(--secondary) !important;
     padding: 0;
+}
+
+.game-list {
+    background-color: var(--bg-color-1);
+}
+
+.custom-select {
+    color: var(--font-color-medium);
+    background-color: #1e1e1e;
 }
