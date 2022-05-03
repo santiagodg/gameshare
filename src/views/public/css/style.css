@@ -147,3 +147,7 @@ footer {
 .dropdown-divider {
     border-top: 1px solid var(--font-color-disabled)
 }
+
+.admin-card {
+    background-color: var(--bg-color-1);
+}

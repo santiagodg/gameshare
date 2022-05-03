@@ -1,7 +1,7 @@
 <%- include (".././partials/header") %>
 <%- include (".././partials/navbar") %>
 <div class="container py-5 h-100 main">
-        <h1 class="text-center my-4">Manage Games</h1>
+        <h1 class="text-center my-4">Manage Users</h1>
         <div id="jsGrid" class="text-body"></div>
     </div>
 
@@ -10,44 +10,29 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-    const games = <%- JSON.stringify(games) %>
+    const users = <%- JSON.stringify(users) %>
 
     $("#jsGrid").jsGrid({
         fields: [
             {
                 type: "text",
-                name: "name",
-                title: "Name",
+                name: "username",
+                title: "Username",
                 align: "center",
                 css: "text-break",
             },
             {
                 type: "text",
-                name: "image",
-                title: "Image",
+                name: "email",
+                title: "Email",
                 align: "center",
                 css: "text-break",
             },
             {
                 type: "checkbox",
-                name: "isVideogame",
-                title: "IsVideogame",
+                name: "isAdmin",
+                title: "IsAdmin",
                 align: "center",
-            },
-            {
-                type: "text",
-                name: "description",
-                title: "Description",
-                align: "center",
-                css: "text-break",
-                width: 300,
-            },
-            {
-                type: "number",
-                name: "avgRating",
-                title: "AvgRating",
-                align: "center",
-                editing: false,
             },
             {
                 type: "checkbox",
@@ -64,11 +49,11 @@
 
         controller: {
             loadData: (filter) => {
-                return games
+                return users
             },
 
             insertItem: async (item) => {
-                response = await axios.post('/admin/games', item)
+                response = await axios.post('/admin/users', item)
 
                 if (response.status !== 200) {
                     return Promise.reject()
@@ -79,7 +64,7 @@
             },
 
             updateItem: async (item) => {
-                response = await axios.put(`/admin/games/${item._id}`, item)
+                response = await axios.put(`/admin/users/${item._id}`, item)
 
                 if (response.status !== 200) {
                     return Promise.reject()
@@ -90,7 +75,7 @@
             },
 
             deleteItem: async (item) => {
-                response = await axios.delete(`/admin/games/${item._id}`, item)
+                response = await axios.delete(`/admin/users/${item._id}`, item)
 
                 if (response.status !== 200) {
                     return Promise.reject()
