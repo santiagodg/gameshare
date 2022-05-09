@@ -151,3 +151,7 @@ footer {
 .admin-card {
     background-color: var(--bg-color-1);
 }
+
+.nav-link:hover {
+    text-decoration: underline;
+}
