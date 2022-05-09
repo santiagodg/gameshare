@@ -4,15 +4,15 @@ const GameModel = require('../../models/game');
 const UserModel = require('../../models/user');
 
 const { handle } = require('../util/util');
-const { isAdmin } = require('../../middleware');
+const { isAdmin, isLoggedIn } = require('../../middleware');
 
 var router = express.Router();
 
-router.get("/", isAdmin, async (_, res) => {
-    res.render('admin/admin', { page: 'admin' });
+router.get("/", isLoggedIn, isAdmin, async (req, res) => {
+    res.render('admin/admin', { page: 'admin', user: req.user });
 });
 
-router.get("/games", isAdmin, async (_, res) => {
+router.get("/games", isLoggedIn, isAdmin, async (req, res) => {
     const [games, gamesError] = await handle(GameModel.find().exec());
 
     if (gamesError) {
@@ -21,10 +21,10 @@ router.get("/games", isAdmin, async (_, res) => {
         return res.status(500).send(gamesError);
     }
 
-    res.render('admin/games', { games });
+    res.render('admin/games', { games, user: req.user });
 });
 
-router.post('/games', isAdmin, async function (req, res) {
+router.post('/games', isLoggedIn, isAdmin, async function (req, res) {
     if (!('name' in req.body) || !('image' in req.body)) {
         return res.status(400).send("'name' and 'image' properties must be set on body of request")
     }
@@ -57,7 +57,7 @@ router.post('/games', isAdmin, async function (req, res) {
     res.send(existent1Game)
 })
 
-router.put('/games/:gameID', isAdmin, async function (req, res) {
+router.put('/games/:gameID', isLoggedIn, isAdmin, async function (req, res) {
     let [game, gameError] = await handle(GameModel.findOne({ _id: req.params.gameID }).exec());
 
     if (gameError || game === undefined) {
@@ -104,7 +104,7 @@ router.put('/games/:gameID', isAdmin, async function (req, res) {
     res.send(existent1Game)
 })
 
-router.delete('/games/:gameID', isAdmin, async (req, res) => {
+router.delete('/games/:gameID', isLoggedIn, isAdmin, async (req, res) => {
     const opResult = await GameModel.deleteOne({ _id: req.params.gameID }).exec();
 
     if (opResult.modifiedCount < 1) {
@@ -114,7 +114,7 @@ router.delete('/games/:gameID', isAdmin, async (req, res) => {
     res.sendStatus(200);
 });
 
-router.get("/users", isAdmin, async (_, res) => {
+router.get("/users", isLoggedIn, isAdmin, async (req, res) => {
     const [users, usersError] = await handle(UserModel.find().exec());
 
     if (usersError) {
@@ -123,10 +123,10 @@ router.get("/users", isAdmin, async (_, res) => {
         return res.status(500).send(usersError);
     }
 
-    res.render('admin/users', { users });
+    res.render('admin/users', { users, user: req.user });
 });
 
-router.post('/users', isAdmin, async function (req, res) {
+router.post('/users', isLoggedIn, isAdmin, async function (req, res) {
     if (!('username' in req.body) || !('email' in req.body)) {
         return res.status(400).send("'username' and 'email' properties must be set on body of request")
     }
@@ -159,7 +159,7 @@ router.post('/users', isAdmin, async function (req, res) {
     res.send(existent1User)
 })
 
-router.put('/users/:userID', isAdmin, async function (req, res) {
+router.put('/users/:userID', isLoggedIn, isAdmin, async function (req, res) {
     let [user, userError] = await handle(UserModel.findOne({ _id: req.params.userID }).exec());
 
     if (userError || user === undefined) {
@@ -201,7 +201,7 @@ router.put('/users/:userID', isAdmin, async function (req, res) {
     res.send(existent1User)
 })
 
-router.delete('/users/:userID', isAdmin, async (req, res) => {
+router.delete('/users/:userID', isLoggedIn, isAdmin, async (req, res) => {
     const opResult = await UserModel.deleteOne({ _id: req.params.userID }).exec();
 
     if (opResult.modifiedCount < 1) {

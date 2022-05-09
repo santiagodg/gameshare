@@ -10,17 +10,17 @@ var router = express.Router()
 
 // Create a new comment in the list
 router.post('/new', isLoggedIn, async (req, res) => {
-    const comment = new Comment({ text : req.body.comment })
+    const comment = new Comment({ text: req.body.comment })
     comment.author = req.user._id
 
     const [newComment, newError] = await handle(comment.save())
     if (newError) {
-        return res.status(400).render('bad-request')
+        return res.status(400).render('bad-request', { user: req.user })
     }
 
-    const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id : req.body.listOfComment }, { $push : { comments : newComment } }, { new : true }))
+    const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id: req.body.listOfComment }, { $push: { comments: newComment } }, { new: true }))
     if (errorUpdate) {
-        return res.status(400).render('bad-request')
+        return res.status(400).render('bad-request', { user: req.user })
     }
 
     // req.flash('success', 'Comment added successfully.');
@@ -33,15 +33,15 @@ router.delete('/:commentId', isLoggedIn, isCommentAuthorOrAdmin, async (req, res
     const commentId = req.params.commentId
     const [deletedComment, deletedError] = await handle(Comment.findByIdAndDelete(commentId))
     if (deletedError) {
-        return res.status(400).render('bad-request')
+        return res.status(400).render('bad-request', { user: req.user })
     }
 
-    const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id : req.body.listOfComment }, { $pull : { comments : commentId } }, { new : true }))
+    const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id: req.body.listOfComment }, { $pull: { comments: commentId } }, { new: true }))
     if (errorUpdate) {
         console.log(errorUpdate)
-        return res.status(400).render('bad-request')
+        return res.status(400).render('bad-request', { user: req.user })
     }
-    
+
     // req.flash('success', 'Comment deleted successfully.');
     res.redirect(`/list/${req.body.listOfComment}`)
 })

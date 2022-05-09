@@ -9,13 +9,13 @@ const ReviewModel = require('../models/review')
 
 var router = express.Router()
 
-router.get("/", async function (req, res) {
+router.get("/", isLoggedIn, async function (req, res) {
     if (req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
         const [games, gamesError] = await handle(GameModel.find({ name: regex, deleted: false }).populate(['ratings', 'reviews']).sort({ 'name': 'asc' }));
 
         if (gamesError) {
-            res.status(404).render('not-found');
+            res.status(404).render('not-found', { user: req.user });
             return;
         }
 
@@ -23,17 +23,17 @@ router.get("/", async function (req, res) {
             console.log("No game title matched, please try again!");
             res.redirect('back');
         } else {
-            res.render('games/list', { games, user: isLoggedIn, searched_title: req.query.search, page: 'games' });
+            res.render('games/list', { games, user: req.user, searched_title: req.query.search, page: 'games' });
         }
     } else {
         const [games, gamesError] = await handle(GameModel.find({ deleted: false }).populate(['ratings', 'reviews']).sort({ 'name': 'asc' }));
 
         if (gamesError || games === []) {
-            res.status(404).render('not-found');
+            res.status(404).render('not-found', { user: req.user });
             return;
         }
 
-        res.render('games/list', { games, user: isLoggedIn, searched_title: undefined, page: 'games' });
+        res.render('games/list', { games, user: req.user, searched_title: undefined, page: 'games' });
     }
 });
 
@@ -56,7 +56,7 @@ router.get('/:id', isLoggedIn, async (req, res) => {
     );
 
     if (gameError || game === null) {
-        res.status(404).render('not-found');
+        res.status(404).render('not-found', { user: req.user });
 
         return;
     }
@@ -72,13 +72,13 @@ router.post('/:id/rating', isLoggedIn, async (req, res) => {
     if (error) {
         console.log(error)
 
-        return res.status(400).render('bad-request')
+        return res.status(400).render('bad-request', { user: req.user })
     }
 
     const [game, gameError] = await handle(GameModel.findOne({ _id: req.params.id, deleted: false }).populate(['ratings', 'reviews']).exec());
 
     if (gameError || game === null) {
-        res.status(400).render('bad-request');
+        res.status(400).render('bad-request', { user: req.user });
 
         return;
     }
@@ -112,7 +112,7 @@ router.get('/:id/review', isLoggedIn, async (req, res) => {
     const [game, gameError] = await handle(GameModel.findOne({ _id: req.params.id, deleted: false }).exec());
 
     if (gameError || game === null) {
-        res.status(404).render('not-found');
+        res.status(404).render('not-found', { user: req.user });
 
         return;
     }
@@ -123,19 +123,19 @@ router.get('/:id/review', isLoggedIn, async (req, res) => {
 router.post('/:id/review', isLoggedIn, async (req, res) => {
     if (req.body.text === null || req.body.text === undefined) {
         console.log(`Games router: POST review: text is required in request body: ${JSON.stringify(req.body)}`)
-        res.status(400).render('bad-request')
+        res.status(400).render('bad-request', { user: req.user })
         return
     }
 
     if (req.body.rating === null || req.body.rating === undefined) {
         console.log(`Error in games router: POST review: rating is required in request body: ${JSON.stringify(req.body)}`)
-        res.status(400).render('bad-request')
+        res.status(400).render('bad-request', { user: req.user })
         return
     }
 
     if (req.body.author === null || req.body.author === undefined) {
         console.log(`Error in games router: POST review: author is required in request body: ${JSON.stringify(req.body)}`)
-        res.status(400).render('bad-request')
+        res.status(400).render('bad-request', { user: req.user })
         return
     }
 
@@ -150,7 +150,7 @@ router.post('/:id/review', isLoggedIn, async (req, res) => {
 
     if (ratingSaveError) {
         console.log(`Error in games router: POST review: failed to save rating: ${JSON.stringify(ratingSaveError)}`)
-        res.status(400).render('bad-request')
+        res.status(400).render('bad-request', { user: req.user })
     }
 
     const reviewDocument = {
@@ -165,7 +165,7 @@ router.post('/:id/review', isLoggedIn, async (req, res) => {
 
     if (reviewSaveError) {
         console.log(`Error in games router: POST review: failed to save review: ${JSON.stringify(reviewSaveError)}`)
-        res.status(400).render('bad-request')
+        res.status(400).render('bad-request', { user: req.user })
         return
     }
 

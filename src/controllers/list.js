@@ -11,23 +11,23 @@ const CommentController = require('./comment')
 var router = express.Router()
 
 router.get('/', isLoggedIn, async (req, res) => {
-    res.render('list/collection')
+    res.render('list/collection', { user: req.user })
 })
 
 router.get('/new', isLoggedIn, async (req, res) => {
     const [games, gamesError] = await handle(Game.find().sort({ name: 1 }).populate(['ratings', 'reviews']).exec())
     if (gamesError) {
-        return res.status(500).render('server-error')
+        return res.status(500).render('server-error', { user: req.user })
     }
     // console.log(games)
-    res.render('list/new', { games: games })
+    res.render('list/new', { games: games, user: req.user })
 })
 
 router.post('/', isLoggedIn, async (req, res) => {
     // Verify that list with that name does not exist for this author
     const [exists, existsError] = await handle(List.findOne({ author: req.user._id, name: req.body.name }))
     if (existsError) {
-        return res.status(500).render('server-error')
+        return res.status(500).render('server-error', { user: req.user })
     }
 
     if (exists !== null) {
@@ -51,7 +51,7 @@ router.post('/', isLoggedIn, async (req, res) => {
 
     const [newList, error] = await handle(list.save())
     if (error) {
-        return res.status(400).render('bad-request')
+        return res.status(400).render('bad-request', { user: req.user })
     }
 
     // req.flash('List added successfully.')
@@ -64,7 +64,7 @@ router.get('/:id', isLoggedIn, async (req, res) => {
     // Because we need the author information for the comments, we use a separate populate to fill the data of the nested attribute of author
     const [list, listError] = await handle(List.findOne({ _id: req.params.id }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'comments', populate: { path: 'author' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
     if (listError) {
-        return res.status(400).render('bad-request')
+        return res.status(400).render('bad-request', { user: req.user })
     }
     res.render('list/single', { list: list, user: req.user })
 })
@@ -77,18 +77,18 @@ router.post('/:id', isLoggedIn, async (req, res) => {
             const like = await Like.create({ liked: true, author: req.user._id })
             const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id: req.params.id }, { $push: { likes: like } }, { new: true }))
             if (errorUpdate) {
-                return res.status(400).render('bad-request')
+                return res.status(400).render('bad-request', { user: req.user })
             }
         } else {
             const likeId = req.body.like
             const [disliked, errorDisliked] = await handle(Like.findOneAndDelete({ _id: likeId }))
             if (errorDisliked) {
-                return res.status(400).render('bad-request')
+                return res.status(400).render('bad-request', { user: req.user })
             }
             const [updateList, errorUpdate] = await handle(List.findOneAndUpdate({ _id: req.params.id }, { $pull: { likes: likeId } }, { new: true }))
             if (errorUpdate) {
                 console.log(errorUpdate)
-                return res.status(400).render('bad-request')
+                return res.status(400).render('bad-request', { user: req.user })
             }
         }
         res.redirect('/')
@@ -101,13 +101,13 @@ router.post('/:id/toggle-softdelete', isLoggedIn, async (req, res) => {
 
     if (foundListError) {
         console.log(foundListError)
-        res.status(400).render('bad-request')
+        res.status(400).render('bad-request', { user: req.user })
         return
     }
 
     if (!(req.user.isAdmin || req.user._id === foundList.author._id)) {
         console.log(`ListRouter.post(${req.params.id}): User (${req.user._id}) must be admin or author of list.`)
-        res.status(403).render('bad-request')
+        res.status(403).render('bad-request', { user: req.user })
     }
 
     foundList.deleted = !foundList.deleted
@@ -116,7 +116,7 @@ router.post('/:id/toggle-softdelete', isLoggedIn, async (req, res) => {
 
     if (savedListError) {
         console.log(savedListError)
-        res.status(400).render('bad-request')
+        res.status(400).render('bad-request', { user: req.user })
         return
     }
 
