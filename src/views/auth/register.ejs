@@ -1,24 +1,18 @@
 <%- include (".././partials/header") %>
 <%- include (".././partials/loginNavbar") %>
-<div class="container py-5 h-100 main">
+<div class="container py-5 my-2 h-100 main">
     <div class="row h-100 justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6 col-xl-5 card login text-white rounded">
-            <div class="card-body p-5 text-center">
-                <div class="container">
-                    <a>
-                        <img src="/images/logo.png" height="50" alt="">
-                    </a>
-                </div>
-                <div class="mt-md-4 pb-5">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5 card login text-white edges">
+            <div class="card-body mx-5 mb-5 mt-3 text-center">
+                <div class="mt-3 pb-4">
 
-                    <p class="h1 font-weight-bold">Register</p>
-                    <p class="text-white-50 mb-5">Enter username, email and password</p>
+                    <p class="h1 font-weight-bold pb-4">Register</p>
 
                     <form action="/register" method="POST">
                         <div class="form-outline form-white mb-4">
-                            <label class="form-label" for="name" style="float: left;">Nombre</label>
+                            <label class="form-label" for="name" style="float: left;">Username</label>
                             <input type="text" id="name" name="user[username]"
-                                class="form-control form-control-lg" placeholder="Juan Pérez"
+                                class="form-control form-control-lg"
                                 required />
 
                         </div>
@@ -26,7 +20,7 @@
                         <div class="form-outline form-white mb-4">
                             <label class="form-label" for="email" style="float: left;">Email</label>
                             <input type="email" id="email" name="user[email]"
-                                class="form-control form-control-lg" placeholder="mail@gmail.com"
+                                class="form-control form-control-lg"
                                 required />
 
                         </div>
@@ -35,19 +29,19 @@
                             <label class="form-label" for="password"
                                 style="float: left;">Password</label>
                             <input type="password" id="password" name="user[password]"
-                                class="form-control form-control-lg" placeholder="••••••••" required />
+                                class="form-control form-control-lg" required />
 
                         </div>
 
                         <div class="form-outline form-white mb-4">
                             <label class="form-label" for="Confirm Password"
-                                style="float: left;">Confirm Password</label>
+                                style="float: left;">Confirm password</label>
                             <input type="password" id="Confirm Password" name="user[confirm_password]"
-                                class="form-control form-control-lg" placeholder="••••••••" required />
+                                class="form-control form-control-lg" required />
 
                         </div>
 
-                        <button class="btn btn-primary btn-lg px-5 text-uppercase font-weight-bold" type="submit">Register</button>
+                        <button class="btn btn-primary btn-lg px-5 mt-4 text-uppercase font-weight-bold" type="submit">Register</button>
                     </form>
                 </div>
 
