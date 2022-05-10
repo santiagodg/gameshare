@@ -4,6 +4,7 @@
   "description": "## Introducción",
   "main": "src/app.js",
   "dependencies": {
+    "connect-flash": "^0.1.1",
     "dotenv": "^16.0.0",
     "ejs": "^3.0.2",
     "express": "^4.17.3",

@@ -34,7 +34,7 @@ router.post('/', isLoggedIn, async (req, res) => {
 
     if (exists !== null) {
         console.log("Error: A list with that name already exists.")
-        // req.flash('A list with that name already exists.')
+        req.flash('A list with that name already exists.')
         return res.redirect('back')
     }
 
@@ -56,7 +56,7 @@ router.post('/', isLoggedIn, async (req, res) => {
         return res.status(400).render('bad-request', { user: req.user })
     }
 
-    // req.flash('List added successfully.')
+    req.flash('List added successfully.')
     res.redirect('/list')
     // res,redirect('/')
 })

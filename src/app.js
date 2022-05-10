@@ -5,7 +5,7 @@ const session = require('express-session')
 const mongoose = require('mongoose')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
-//const flash = require("connect-flash")
+const flash = require("connect-flash")
 const path = require('path')
 const methodOverride = require('method-override')
 
@@ -26,7 +26,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 app.use(express.static('public'));
 
-//app.use(flash())
+app.use(flash())
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -54,8 +54,8 @@ passport.deserializeUser(User.deserializeUser())
 
 app.use((req, res, next) => {
   res.locals.current_user = req.user;
-  //res.locals.success = req.flash('success');
-  //res.locals.error = req.flash('error');
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
   next();
 })
 
