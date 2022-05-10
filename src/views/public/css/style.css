@@ -185,3 +185,27 @@ input[type="email"], input[type="text"], input[type="password"], input[type="use
 .opaque {
     opacity: 0.55;
 }
+
+.list-card {
+    background-color: rgb(24, 24, 24);
+    border-radius: 15px;
+    box-shadow: 10px 10px 12px rgb(13, 13, 13);
+}
+
+.list-img {
+    width: 140px;
+    height: 150px;
+    opacity: 0.7;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.flex-child {
+    flex: 1;
+}  
+
+.flex-child:first-child {
+    margin-right: 20px;
+} 

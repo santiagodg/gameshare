@@ -11,7 +11,12 @@ const CommentController = require('./comment')
 var router = express.Router()
 
 router.get('/', isLoggedIn, async (req, res) => {
-    res.render('list/collection', { user: req.user })
+    const [lists, listsError] = await handle(List.find({ author: req.user._id }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'games', populate: { path: 'image' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
+    if (listsError) {
+        return res.status(400).render('bad-request', { user: req.user })
+    }
+    console.log(lists)
+    res.render('list/collection', { lists: lists, user: req.user })
 })
 
 router.get('/new', isLoggedIn, async (req, res) => {
