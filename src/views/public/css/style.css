@@ -65,6 +65,10 @@ body {
     font-size: 18px;
 }
 
+.nav-link:hover {
+    color: rgb(174, 134, 191);
+}
+
 .btn-outline-primary {
     color: var(--primary);
     border-color: var(--primary);
@@ -160,13 +164,9 @@ body {
     background-color: var(--bg-color-1);
 }
 
-.nav-link:hover {
-    color: rgb(174, 134, 191);
-}
-
 .carousel-size {
-    width: 1000px;
-    height: 500px;
+    max-width: 800px;
+    max-height: 500px;
 }
 
 .edges {
@@ -174,11 +174,14 @@ body {
     box-shadow: 10px 10px 12px rgb(13, 13, 13);
 }
 
+.outline {
+    border-color: white;
+}
+
 input[type="email"], input[type="text"], input[type="password"], input[type="username"] {
     font-size: 16px;
 }
 
-.outline {
-    /* border-color: rgb(69, 69, 69); */
-    border-color: white;
+.opaque {
+    opacity: 0.55;
 }
