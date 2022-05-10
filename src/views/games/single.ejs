@@ -50,9 +50,13 @@
                                         <p class="mb-2">
                                             <span>Reviewed by</span>
                                             <span class="font-weight-bold">&nbsp;&nbsp;<%= review.author.username %></span>
-                                            <span>&nbsp;&nbsp;⭐<%= review.rating.score %></span>
+                                            <% if (review.rating) { %>
+                                                <span>&nbsp;&nbsp;⭐<%= review.rating.score %></span>
+                                            <% } %>
                                         </p>
-                                        <p class="mb-0"><%- review.text.replaceAll('\n', '<br>') %></p>
+                                        <% if (review.text && review.text != "") { %>
+                                            <p class="mb-0"><%= review.text %></p>
+                                        <% } %>
                                     </div>
                                     <div class="dropdown-divider"></div>
                                 <% }) %>
