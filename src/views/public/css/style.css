@@ -36,7 +36,8 @@ a {
 }
 
 a:hover {
-    color: var(--secondary);
+    color: rgb(174, 134, 191);
+    text-decoration: none;
 }
 
 body {
@@ -45,21 +46,23 @@ body {
     flex-direction: column;
 }
 
-footer {
-    background-color: var(--bg-color-3);
-}
-
 /* option {
     color: var(--font-color-medium);
     background-color: var(--bg-color-1);
 } */
 
 .hero {
-    background-color: var(--bg-color-1);
+    background-color:rgb(24, 24, 24);
 }
 
-.navbar {
-    background-color: var(--bg-color-3);
+.navbar, footer {
+    background-color:rgb(36, 36, 36);
+}
+
+.nav-item {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 18px;
 }
 
 .btn-outline-primary {
@@ -107,7 +110,7 @@ footer {
 }
 
 .login {
-    background-color: var(--bg-color-1);
+    background-color:rgb(24, 24, 24);
 }
 
 .form-control {
@@ -168,17 +171,11 @@ footer {
 
 .edges {
     border-radius: 15px;
-    box-shadow: 10px 10px 18px black;
+    box-shadow: 10px 10px 12px rgb(13, 13, 13);
 }
 
 input[type="email"], input[type="text"], input[type="password"], input[type="username"] {
     font-size: 16px;
-}
-
-.nav-item {
-    color: var(--primary);
-    font-weight: bold;
-    font-size: 18px;
 }
 
 .outline {
