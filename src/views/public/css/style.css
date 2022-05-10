@@ -3,12 +3,13 @@
     --bg-color-1: rgba(255, 255, 255, 0.05);
     --bg-color-2: rgba(255, 255, 255, 0.10);
     --bg-color-3: rgba(255, 255, 255, 0.15);
-    --primary: rgb(239, 154, 154) !important;
+    --primary: rgb(166, 114, 189) !important;
+    /* --primary: rgb(239, 154, 154) !important; */
     --primary-50: rgba(239, 154, 154, 0.5) !important;
-    --secondary: rgb(211, 47, 47) !important;
+    --secondary: rgb(144, 91, 167) !important;
     --font-color-emphasis: rgba(255, 255, 255, 0.87);
     --font-color-medium: rgba(255, 255, 255, 0.60);
-    --font-color-disabled: rgba(255, 255, 255, 0.38);
+    --font-color-disabled: rgba(2ßß55, 255, 255, 0.38);
 }
 
 ::placeholder {
@@ -35,7 +36,8 @@ a {
 }
 
 a:hover {
-    color: var(--secondary);
+    color: rgb(174, 134, 191);
+    text-decoration: none;
 }
 
 body {
@@ -44,21 +46,23 @@ body {
     flex-direction: column;
 }
 
-footer {
-    background-color: var(--bg-color-3);
-}
-
 /* option {
     color: var(--font-color-medium);
     background-color: var(--bg-color-1);
 } */
 
 .hero {
-    background-color: var(--bg-color-1);
+    background-color:rgb(24, 24, 24);
 }
 
-.navbar {
-    background-color: var(--bg-color-3);
+.navbar, footer {
+    background-color:rgb(36, 36, 36);
+}
+
+.nav-item {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 18px;
 }
 
 .btn-outline-primary {
@@ -82,6 +86,7 @@ footer {
 
 .btn-primary {
     color: #000;
+    color:rgb(255, 255, 255);
     background-color: var(--primary);
     border-color: var(--primary);
 }
@@ -105,13 +110,14 @@ footer {
 }
 
 .login {
-    background-color: var(--bg-color-1);
+    background-color:rgb(24, 24, 24);
 }
 
 .form-control {
     color: var(--font-color-medium);
     background-color: var(--bg-color-1);
     transition: background-color 0.1s;
+    border-color: rgb(69, 69, 69);
 }
 
 .form-control:focus {
@@ -133,11 +139,13 @@ footer {
 
 .game-list {
     background-color: var(--bg-color-1);
+    border-color: rgb(69, 69, 69);
 }
 
 .custom-select {
     color: var(--font-color-medium);
     background-color: #1e1e1e;
+    border-color: rgb(69, 69, 69);
 }
 
 .game-rate-box {
@@ -153,5 +161,24 @@ footer {
 }
 
 .nav-link:hover {
-    text-decoration: underline;
+    color: rgb(174, 134, 191);
+}
+
+.carousel-size {
+    width: 1000px;
+    height: 500px;
+}
+
+.edges {
+    border-radius: 15px;
+    box-shadow: 10px 10px 12px rgb(13, 13, 13);
+}
+
+input[type="email"], input[type="text"], input[type="password"], input[type="username"] {
+    font-size: 16px;
+}
+
+.outline {
+    /* border-color: rgb(69, 69, 69); */
+    border-color: white;
 }

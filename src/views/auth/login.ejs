@@ -1,18 +1,13 @@
 <%- include (".././partials/header") %>
 <%- include (".././partials/loginNavbar") %>
-<div class="container py-5 h-100 main">
+<div class="container py-5 my-2 h-100 main">
     <div class="row h-100 justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6 col-xl-5 card login text-white rounded">
-            <div class="card-body p-5 text-center">
-                <div class="container">
-                    <a>
-                        <img src="/images/logo.png" height="50" alt="">
-                    </a>
-                </div>
-                <div class="mt-md-4 pb-5">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5 card login text-white edges">
+            <div class="card-body mx-5 mb-5 mt-3 text-center">
+                <div class="mt-3 pb-4">
 
-                    <p class="h1 font-weight-bold">Login</p>
-                    <p class="text-white-50 mb-5">Enter your username and password</p>
+                    <p class="h1 font-weight-bold pb-4">Login</p>
+                    <!-- <p class="text-white-50 mb-5">Enter your username and password</p> -->
 
                     <form action="/login" method="POST">
                         <div class="form-outline form-white mb-4">
@@ -20,7 +15,6 @@
                                 style="float: left;">Username</label>
                             <input type="username" id="username" name="username"
                                 class="form-control form-control-lg" required />
-
                         </div>
 
                         <div class="form-outline form-white mb-4">
@@ -31,12 +25,12 @@
 
                         </div>
 
-                        <button class="btn btn-primary btn-lg px-5 text-uppercase font-weight-bold" type="submit"
+                        <button class="btn btn-primary btn-lg px-5 mt-4 text-uppercase font-weight-bold" type="submit"
                             style="margin-left: 0; margin-right: auto;">Log in</button>
                     </form>
                 </div>
-                <div>
-                    <p class="mb-0">Doesn't have an account? <a href="/register">Register here</a></p>
+                <div class="pt-0">
+                    <p class="my-0">Don't have an account? <a href="/register">Register here.</a></p>
                 </div>
             </div>
         </div>
