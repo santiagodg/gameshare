@@ -23,7 +23,7 @@ router.post('/new', isLoggedIn, async (req, res) => {
         return res.status(400).render('bad-request', { user: req.user })
     }
 
-    // req.flash('success', 'Comment added successfully.');
+    req.flash('success', 'Comment added successfully.');
     res.redirect(`/list/${req.body.listOfComment}`)
 
 })
@@ -42,7 +42,7 @@ router.delete('/:commentId', isLoggedIn, isCommentAuthorOrAdmin, async (req, res
         return res.status(400).render('bad-request', { user: req.user })
     }
 
-    // req.flash('success', 'Comment deleted successfully.');
+    req.flash('success', 'Comment deleted successfully.');
     res.redirect(`/list/${req.body.listOfComment}`)
 })
 

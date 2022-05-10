@@ -21,6 +21,7 @@ router.get("/", isLoggedIn, async function (req, res) {
 
         if (games.length < 1) {
             console.log("No game title matched, please try again!");
+            req.flash('error', 'No game title matched, please try again!')
             res.redirect('back');
         } else {
             res.render('games/list', { games, user: req.user, searched_title: req.query.search, page: 'games' });
@@ -184,6 +185,7 @@ router.post('/:id/review', isLoggedIn, async (req, res) => {
         return
     }
 
+    req.flash('success', 'Review added successfully.')
     res.redirect(`/games/${req.params.id}`);
 });
 
