@@ -17,6 +17,7 @@ router.get('/', isLoggedIn, async (req, res) => {
 router.get('/new', isLoggedIn, async (req, res) => {
     const [games, gamesError] = await handle(Game.find().sort({ name: 1 }).populate(['ratings', 'reviews']).exec())
     if (gamesError) {
+        console.log(`Error in GET /list/new: Failed finding games: ${gamesError}}`)
         return res.status(500).render('server-error', { user: req.user })
     }
     // console.log(games)
@@ -27,6 +28,7 @@ router.post('/', isLoggedIn, async (req, res) => {
     // Verify that list with that name does not exist for this author
     const [exists, existsError] = await handle(List.findOne({ author: req.user._id, name: req.body.name }))
     if (existsError) {
+        console.log(`Error in POST /list: List already exists: ${existsError}}`)
         return res.status(500).render('server-error', { user: req.user })
     }
 
@@ -46,7 +48,7 @@ router.post('/', isLoggedIn, async (req, res) => {
     for (var i in selectedGames) {
         gameIds.push(selectedGames[i])
     }
-    console.log(gameIds)
+    console.log(`Debug: POST /list: ${gameIds}`)
     list.games = gameIds
 
     const [newList, error] = await handle(list.save())
