@@ -157,7 +157,7 @@ router.put('/:id', isLoggedIn, async (req, res) => {
     const [savedList, savedListError] = await handle(foundList.save())
 
     if (savedListError) {
-        console.error(`error in PUT /list/${req.params.id}: failed to save list ${savedList._id} after updating: ${savedListError}`)
+        console.error(`error in PUT /list/${req.params.id}: failed to save list ${foundList._id} after updating: ${savedListError}`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }

@@ -28,7 +28,11 @@
                                 <input type="hidden" name="author" value="<%= user._id %>" form="rate-game">
                                 <label for="rating-score">Rate</label>
                                 <div class="input-group">
-                                    <input id="rating-score" form="rate-game" class="form-control" name="score" type="number" min="1" max="5">
+                                    <% if (typeof userRating === "undefined") { %>
+                                        <input id="rating-score" form="rate-game" class="form-control" name="score" type="number" min="1" max="5">
+                                    <% } else { %>
+                                        <input id="rating-score" form="rate-game" class="form-control" name="score" type="number" min="1" max="5" value="<%= userRating.score %>">
+                                    <% } %>
                                     <div class="input-group-append">
                                         <input type="submit" class="btn btn-outline-primary text-uppercase font-weight-bold" form="rate-game">
                                     </div>
@@ -52,19 +56,36 @@
                                 <div class="dropdown-divider"></div>
                                 <% game.reviews.forEach(review => { %>
                                     <div class="my-3">
-                                        <p class="mb-2" style="font-size: 14px;">
-                                            <span>Reviewed by</span>
-                                            <span class="pink-text font-weight-bold"><%= review.author.username %></span>
-                                            <span>on <%=review.createdAt.toDateString()%> </span>
-                                            <span class="pink-text">&nbsp;&nbsp;• </span>
-                                            <% if (review.rating) { %>
-                                                <span>&nbsp;&#9733;&nbsp;<%=review.rating.score%></span>
+                                        <div class="row">
+                                            <div class="col mr-auto d-flex flex-column justify-content-end">
+                                                <p class="mb-2" style="font-size: 14px;">
+                                                    <span>Reviewed by</span>
+                                                    <span class="pink-text font-weight-bold"><%= review.author.username %></span>
+                                                    <span>on <%=review.createdAt.toDateString()%> </span>
+                                                    <% if (review.rating) { %>
+                                                        <span class="pink-text">&nbsp;&nbsp;• </span>
+                                                        <span>&nbsp;&#9733;&nbsp;<%=review.rating.score%></span>
+                                                    <% } %>
+                                                </p>
+                                            </div>
+                                            <% if (user.isAdmin || review.author._id.equals(user._id)) { %>
+                                                <div class="col-2 text-right">
+                                                    <form action="/games/<%= game._id %>/delete-review" method="POST">
+                                                        <input type="hidden" name="reviewId" value="<%= review._id %>">
+                                                        <button class="btn btn-outline-primary btn-sm" type="submit">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             <% } %>
-                                        </p>
+                                        </div>
                                         <% if (review.text && review.text != "") { %>
                                             <p class="mb-0"><%= review.text %></p>
                                         <% } %>
                                     </div>
+                                    
                                     <div class="dropdown-divider"></div>
                                 <% }) %>
                             </div>
@@ -73,61 +94,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="col-9">
-            <div class="row">
-                <div class="col">
-                    <h1 class="d-inline-block"><%= game.name %></h1>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-8">
-                    <p><%= game.description %></p>
-                </div>
-                <div class="col-4">
-                    <div class="game-rate-box rounded">
-                        <div class="p-3">
-                            <form id="rate-game" action="/games/<%= game._id %>/rating" method="POST">
-                                <input type="hidden" name="author" value="<%= user._id %>" form="rate-game">
-                                <label for="rating-score">Rate</label>
-                                <div class="input-group">
-                                    <input id="rating-score" form="rate-game" class="form-control" name="score" type="number" min="1" max="5">
-                                    <div class="input-group-append">
-                                        <input type="submit" class="btn btn-outline-primary text-uppercase font-weight-bold" form="rate-game">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="text-center p-3">
-                            <a class="btn btn-primary text-uppercase font-weight-bold" href="/games/<%= game._id %>/review">Review</a>
-                        </div>
-                    </div>
-                    <% if (game.avgRating !== null) { %>
-                        <div>
-                            <p class="mt-4 mb-0">Rating</p>
-                            <p class="display-4"><%= game.avgRating %></p>
-                        </div>
-                    <% } %>
-                </div>
-            </div>
-            <% if (game.reviews.length !== 0) { %>
-                <div class="row mt-4">
-                    <div class="col">
-                        <h2>Reviews</h2>
-                        <% game.reviews.forEach(review => { %>
-                            <div class="my-4">
-                                <p class="mb-2">
-                                    <span>Reviewed by</span>
-                                    <span class="font-weight-bold">&nbsp;&nbsp;<%= review.author.username %></span>
-                                    <span>&nbsp;&nbsp;⭐<%= review.rating.score %></span>
-                                </p>
-                                <p><%= review.text %></p>
-                            </div>
-                        <% }) %>
-                    </div>
-                </div>
-            <% } %>
-        </div> -->
     </div>
 </div>
 <%- include (".././partials/footer") %>

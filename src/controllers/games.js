@@ -41,18 +41,16 @@ router.get("/", isLoggedIn, async function (req, res) {
 router.get('/:id', isLoggedIn, async (req, res) => {
     const [game, gameError] = await handle(
         GameModel.findOne({ _id: req.params.id, deleted: false })
-            .populate({
-                path: 'reviews',
-                populate: {
-                    path: 'rating'
+            .populate([
+                {
+                    path: 'reviews',
+                    populate: ['rating', 'author']
+                },
+                {
+                    path: 'ratings',
+                    populate: 'author',
                 }
-            })
-            .populate({
-                path: 'reviews',
-                populate: {
-                    path: 'author'
-                }
-            })
+            ])
             .exec()
     );
 
@@ -62,7 +60,9 @@ router.get('/:id', isLoggedIn, async (req, res) => {
         return;
     }
 
-    res.render('games/single', { game, user: req.user, searched_title: undefined });
+    const userRating = game.ratings.find(rating => rating.author._id.equals(req.user._id))
+
+    res.render('games/single', { game, user: req.user, userRating, searched_title: undefined });
 });
 
 router.post('/:id/rating', isLoggedIn, async (req, res) => {
@@ -121,72 +121,189 @@ router.get('/:id/review', isLoggedIn, async (req, res) => {
     res.render('games/review', { game, user: req.user, searched_title: undefined });
 });
 
+// - Find game
+// - Create/Overwrite rating
+// - Save rating
+// - Add rating to game
+// - Update avgRating
+// - Create review with rating
+// - Save review
+// - Add review to game
+// - Save game
+// - Redirect to games/single
 router.post('/:id/review', isLoggedIn, async (req, res) => {
-    if (req.body.text === null || req.body.text === undefined) {
-        console.log(`Games router: POST review: text is required in request body: ${JSON.stringify(req.body)}`)
+    // Find game
+    const [foundGame, foundGameError] = await handle(
+        GameModel.findOne({ _id: req.params.id, deleted: false })
+            .populate([
+                {
+                    path: 'ratings',
+                    populate: 'author',
+                },
+                {
+                    path: 'reviews',
+                    populate: ['rating', 'author'],
+                }
+            ])
+            .exec()
+    );
+
+    if (foundGameError) {
+        console.error(`Error in POST /games/${req.params.id}/review: Failed finding game: ${JSON.stringify(foundGameError)}`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }
 
-    if (req.body.rating === null || req.body.rating === undefined) {
-        console.log(`Error in games router: POST review: rating is required in request body: ${JSON.stringify(req.body)}`)
-        res.status(400).render('bad-request', { user: req.user })
-        return
+    // Create/Overwrite rating (Optional)
+    let rating = null
+    if (typeof req.body.rating !== "undefined" && req.body.rating !== null && req.body.rating !== "") {
+        const ratingScore = parseInt(req.body.rating)
+
+        if (isNaN(ratingScore)) {
+            console.error(`Error in POST /games/${req.params.id}/review: rating must be an integer, given ${req.body.rating}.`)
+            res.status(400).render('bad-request', { user: req.user })
+            return
+        }
+
+        if (ratingScore < 1 || 5 < ratingScore) {
+            console.error(`Error in POST /games/${req.params.id}/review: rating must be between 1 and 5, given ${ratingScore}.`)
+            res.status(400).render('bad-request', { user: req.user })
+            return
+        }
+
+        // Check if rating exists
+        rating = foundGame.ratings.find(rating => rating.author._id.equals(req.user._id))
+
+        if (typeof rating === "undefined") {
+            // Create rating
+            rating = new RatingModel({
+                score: ratingScore,
+                author: req.body.author
+            })
+        } else {
+            // Overwrite rating
+            rating.score = ratingScore
+        }
+
+        // Save rating
+        const [newRating, ratingSaveError] = await handle(rating.save())
+
+        if (ratingSaveError) {
+            console.log(`Error in POST /games/${req.params.id}/review: failed to save rating: ${JSON.stringify(ratingSaveError)}`)
+            res.status(400).render('bad-request', { user: req.user })
+            return
+        }
+
+        rating = newRating
     }
 
-    if (req.body.author === null || req.body.author === undefined) {
-        console.log(`Error in games router: POST review: author is required in request body: ${JSON.stringify(req.body)}`)
-        res.status(400).render('bad-request', { user: req.user })
-        return
+    // Add rating to game
+    if (rating !== null) {
+        foundGame.ratings.push(rating)
+
+        // Update avgRating
+        let ratingSum = 0
+
+        foundGame.ratings.forEach(rating => {
+            ratingSum += rating.score
+        })
+
+        foundGame.avgRating = ratingSum / foundGame.ratings.length
     }
 
-    const ratingDocument = {
-        score: req.body.rating,
-        author: req.body.author
-    }
-
-    const rating = new RatingModel(ratingDocument)
-
-    const [newRating, ratingSaveError] = await handle(rating.save())
-
-    if (ratingSaveError) {
-        console.log(`Error in games router: POST review: failed to save rating: ${JSON.stringify(ratingSaveError)}`)
-        res.status(400).render('bad-request', { user: req.user })
-    }
-
-    const reviewDocument = {
+    // Create review with rating
+    const review = new ReviewModel({
         text: req.body.text,
-        rating: newRating._id,
+        rating: rating,
         author: req.body.author
-    }
+    })
 
-    const review = new ReviewModel(reviewDocument)
-
+    // Save review
     const [newReview, reviewSaveError] = await handle(review.save())
 
     if (reviewSaveError) {
-        console.log(`Error in games router: POST review: failed to save review: ${JSON.stringify(reviewSaveError)}`)
+        console.error(`Error in POST /games/${req.params.id}/review: Failed to save review: ${JSON.stringify(reviewSaveError)}`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }
 
-    const opResult = await GameModel.updateOne(
-        { _id: req.params.id },
-        {
-            $push: {
-                reviews: newReview._id
-            }
-        }
-    )
+    // Add review to game
+    foundGame.reviews.push(newReview)
 
-    if (opResult.modifiedCount < 1) {
-        console.log(`Error in games router: POST review: failed to update game with new review: ${JSON.stringify(opResult)}`)
-        res.status(400).redirect(`/games/${req.params.id}`)
+    // Save game
+    const [_savedGame, savedGameError] = await handle(foundGame.save())
+
+    if (savedGameError) {
+        console.error(`Error in POST /games/${req.params.id}/review: Failed to save game ${foundGame._id}: ${JSON.stringify(savedGameError)}`)
+        res.status(400).render('bad-request', { user: req.user })
         return
     }
 
+    // Redirect to games/single
     req.flash('success', 'Review added successfully.')
-    res.redirect(`/games/${req.params.id}`);
+    res.redirect(`/games/${req.params.id}`)
 });
+
+// 1. Find game to update
+// 2. Find review to remove in found game
+// 4. Remove reference of review from game.reviews
+// 5. Delete review from database
+// 6. Save game
+// 7. Redirect to games/single
+router.post('/:id/delete-review', isLoggedIn, async (req, res) => {
+    // Find game to update
+    const [foundGame, foundGameError] = await handle(
+        GameModel.findOne({ _id: req.params.id, deleted: false })
+            .populate([
+                {
+                    path: 'ratings',
+                    populate: 'author',
+                },
+                {
+                    path: 'reviews',
+                    populate: ['rating', 'author'],
+                }
+            ])
+            .exec()
+    );
+
+    if (foundGameError) {
+        console.error(`Error in POST /games/${req.params.id}/delete-review: Failed finding game: ${foundGameError}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    // Find review to remove
+    const reviewIndexToRemove = foundGame.reviews.findIndex(gameReview => gameReview._id.equals(req.body.reviewId))
+
+    if (reviewIndexToRemove === -1) {
+        console.error(`Error in POST /games/${req.params.id}/delete-review: failed to find review ${req.body.reviewId} in reviews of game ${foundGame._id}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    // Remove game review link
+    foundGame.reviews.splice(reviewIndexToRemove, 1)
+
+    // Delete review from database
+    const query = await ReviewModel.deleteOne({ _id: req.body.reviewId });
+
+    if (query.deletedCount !== 1) {
+        console.error(`Error in POST /games/${req.params.id}/delete-review: Failed to delete review ${req.body.reviewId}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    // Save game without review link
+    const [_, savedGameError] = await handle(foundGame.save())
+
+    if (savedGameError) {
+        console.error(`Error in POST /games/${req.params.id}/delete-review: failed to save game ${foundGame._id} after updating: ${savedListError}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    res.redirect(`/games/${req.params.id}`)
+})
 
 module.exports = router
