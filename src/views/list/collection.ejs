@@ -13,8 +13,10 @@
                         <div class="flex-container">
                             <h5 class="flex-child pb-2"><a href="/list/<%= list._id %>"><%= list.name %></a></h5>  
                             <div class="flex-child mr-4 text-right">
-                                <span><%= list.likes.length %> Likes •</span>
-                                <span><%= list.comments.length %> Comments • </span>
+                                <span><%= list.likes.length %> Likes </span>
+                                <span class="pink-text">• </span>
+                                <span><%= list.comments.length %> Comments </span>
+                                <span class="pink-text">• </span>
                                 <span>Created on <span><%= list.createdAt.toDateString() %></span>
                             </div>
                         </div>
