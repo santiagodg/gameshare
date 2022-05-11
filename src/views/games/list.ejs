@@ -13,8 +13,12 @@
                     <img class="game-card w-100 rounded single-img" src="<%= game.image %>">
                 </a>
                 <p class="text-center my-2" style="font-size: 0.75rem">
-                    <span>&nbsp;&nbsp;&nbsp;🤍&nbsp;<%= game.reviews.length %> reviews</span>
-                    <span>&nbsp;&nbsp;&nbsp;🔆&nbsp;<%= game.avgRating %> rating</span>
+                    <span><span class="pink-text">&#9829;&nbsp;</span><%= game.reviews.length %> Reviews</span>
+                    <% if(game.avgRating > 0){ %>
+                        <span><span class="pink-text">&nbsp;&nbsp; &#9733;&nbsp;</span><%= game.avgRating %> Rating</span>
+                    <% } else{ %>  
+                        <span><span class="pink-text">&nbsp;&nbsp; &#9733;&nbsp;</span>0 Rating</span>
+                     <% } %>
                 </p>
             </div>
         <% }) %>
