@@ -84,26 +84,21 @@ router.post('/:id/rating', isLoggedIn, async (req, res) => {
         return;
     }
 
+    game.ratings.push(newRating)
+
     let ratingSum = 0
     game.ratings.forEach(rating => {
         ratingSum += rating.score
     })
-    const avgRating = ratingSum / game.ratings.length
 
-    const opResult = await GameModel.updateOne(
-        { _id: req.params.id },
-        {
-            '$push': {
-                'ratings': newRating._id
-            },
-            '$set': {
-                'avgRating': avgRating
-            }
-        }
-    )
+    game.avgRating = ratingSum / game.ratings.length
 
-    if (opResult.modifiedCount < 1) {
-        return res.status(404).redirect(`/games/${req.params.id}`);
+    const [savedGame, savedGameError] = await handle(game.save())
+
+    if (savedGameError) {
+        console.error(`Error in POST /games/${req.params.id}/rating: Failed to save game: ${JSON.stringify(savedGameError)}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
     }
 
     res.redirect(`/games/${req.params.id}`);
