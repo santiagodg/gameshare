@@ -81,7 +81,7 @@ router.post('/', isLoggedIn, async (req, res) => {
 // Show all attributes of a list in a single page
 router.get('/:id', isLoggedIn, async (req, res) => {
     // Because we need the author information for the comments, we use a separate populate to fill the data of the nested attribute of author
-    const [list, listError] = await handle(List.findOne({ _id: req.params.id }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'comments', populate: { path: 'author' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
+    const [list, listError] = await handle(List.findOne({ _id: req.params.id, deleted: false }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'comments', populate: { path: 'author' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
     if (listError) {
         return res.status(400).render('bad-request', { user: req.user })
     }
@@ -117,7 +117,7 @@ router.post('/:id', isLoggedIn, async (req, res) => {
 // Get edit list view
 router.get('/:id/edit', isLoggedIn, async (req, res) => {
     // Because we need the author information for the comments, we use a separate populate to fill the data of the nested attribute of author
-    const [list, listError] = await handle(List.findOne({ _id: req.params.id }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'comments', populate: { path: 'author' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
+    const [list, listError] = await handle(List.findOne({ _id: req.params.id, deleted: false }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'comments', populate: { path: 'author' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
     if (listError) {
         console.error(`Error in GET /list/${req.params.id}/edit: Failed finding list: ${listError}}`)
         res.status(400).render('bad-request', { user: req.user })
@@ -136,7 +136,7 @@ router.get('/:id/edit', isLoggedIn, async (req, res) => {
 
 // Edit list
 router.put('/:id', isLoggedIn, async (req, res) => {
-    const [foundList, foundListError] = await handle(List.findOne({ _id: req.params.id }))
+    const [foundList, foundListError] = await handle(List.findOne({ _id: req.params.id, deleted: false }))
 
     if (foundListError) {
         console.error(`error in PUT /list/${req.params.id}: failed to find list ${req.params.id}: ${foundListError}`)
