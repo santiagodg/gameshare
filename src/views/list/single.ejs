@@ -27,11 +27,11 @@
             </div>
             <h1 class="h2 mb-0 mx-2"><%= list.name %></h1>
             <p class="mx-2" style="font-size: 18px;"><%= list.description %></p>
-            <div class="row my-4 mx-0 px-0">
+            <div class="row no-gutters">
                 <% list.games.forEach(game => { %>
-                    <div class="col col-img my-2" style="text-align: center;">
-                        <a href="/games/<%= game._id %>">
-                            <img class="rounded single-img" src="<%= game.image %>">
+                    <div class="col-3 px-1 my-2 align-self-center">
+                        <a href="/games/<%= game._id %>" title="<%= game.name%>">
+                            <img class="game-card w-100 rounded single-img" src="<%= game.image %>">
                         </a>
                     </div>
                 <% }) %>

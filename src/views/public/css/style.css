@@ -46,11 +46,6 @@ body {
     flex-direction: column;
 }
 
-/* option {
-    color: var(--font-color-medium);
-    background-color: var(--bg-color-1);
-} */
-
 .hero {
     background-color:rgb(24, 24, 24);
 }
@@ -129,7 +124,7 @@ body {
     background-color: var(--bg-color-2);
 }
 
-.game {
+/* .game {
     transition: border 0.1s, padding 0.1s;
     border: 1px solid white;
     padding: 2px;
@@ -139,7 +134,7 @@ body {
     box-sizing: border-box;
     border: 3px solid var(--secondary) !important;
     padding: 0;
-}
+} */
 
 .game-list {
     background-color: var(--bg-color-1);
@@ -213,7 +208,6 @@ input[type="email"], input[type="text"], input[type="password"], input[type="use
 .col-img {
     width: 240px;
     height: 290px;
-    
     align-content: flex-start;
 }
 
@@ -221,4 +215,8 @@ input[type="email"], input[type="text"], input[type="password"], input[type="use
     width: 240px;
     height: 290px;
     opacity: 0.7;
+}
+
+.game-card:hover {
+    opacity: 0.6;
 }
