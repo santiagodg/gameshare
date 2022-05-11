@@ -3,13 +3,17 @@
 <div class="container py-5 h-100 main">
     <div class="row">
         <div class="col-3">
-            <img class="w-100 shadow" src="<%= game.image %>">
+            <img class="single-img shadow" src="<%= game.image %>">
             <% if (game.avgRating !== null) { %>
-                <div class="text-center">
-                    <p class="mt-4 mb-0">Rating</p>
-                    <p class="display-4"><%= game.avgRating %></p>
+                <div class="text-center mt-4 mb-3">
+                    <p class="mb-0">Rating</p>
+                    <p class="h4 text-light"><%= game.avgRating.toFixed(2) %></p>
                 </div>
             <% } %>
+            <div class="text-center">
+                <p class="mt-2 mb-0">Reviews</p>
+                <p class="h4 text-light"><%=game.reviews.length%></p>
+            </div>
         </div>
         <div class="col-9">
             <div class="row">
@@ -41,17 +45,20 @@
             <div class="row">
                 <div class="col">
                     <% if (game.reviews.length !== 0) { %>
-                        <div class="row mt-4">
+                        <hr class="mt-5" style="background-color: rgb(174, 134, 191);">
+                        <div class="row mt-5">
                             <div class="col">
-                                <h2>Reviews</h2>
+                                <h3 style ="color:rgba(255, 255, 255, 0.60);" >Reviews</h3>
                                 <div class="dropdown-divider"></div>
                                 <% game.reviews.forEach(review => { %>
-                                    <div class="my-4">
-                                        <p class="mb-2">
+                                    <div class="my-3">
+                                        <p class="mb-2" style="font-size: 14px;">
                                             <span>Reviewed by</span>
-                                            <span class="font-weight-bold">&nbsp;&nbsp;<%= review.author.username %></span>
+                                            <span class="pink-text font-weight-bold"><%= review.author.username %></span>
+                                            <span>on <%=review.createdAt.toDateString()%> </span>
+                                            <span class="pink-text">&nbsp;&nbsp;• </span>
                                             <% if (review.rating) { %>
-                                                <span>&nbsp;&nbsp;⭐<%= review.rating.score %></span>
+                                                <span>&nbsp;&#9733;&nbsp;<%=review.rating.score%></span>
                                             <% } %>
                                         </p>
                                         <% if (review.text && review.text != "") { %>
