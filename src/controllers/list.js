@@ -53,7 +53,7 @@ router.post('/', isLoggedIn, async (req, res) => {
     for (var i in selectedGames) {
         gameIds.push(selectedGames[i])
     }
-    console.log(`Debug: POST /list: ${gameIds}`)
+
     list.games = gameIds
 
     const [newList, error] = await handle(list.save())
@@ -102,6 +102,57 @@ router.post('/:id', isLoggedIn, async (req, res) => {
     }
 })
 
+// Get edit list view
+router.get('/:id/edit', isLoggedIn, async (req, res) => {
+    // Because we need the author information for the comments, we use a separate populate to fill the data of the nested attribute of author
+    const [list, listError] = await handle(List.findOne({ _id: req.params.id }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'comments', populate: { path: 'author' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
+    if (listError) {
+        console.error(`Error in GET /list/${req.params.id}/edit: Failed finding list: ${listError}}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    const [games, gamesError] = await handle(Game.find().sort({ name: 1 }).populate(['ratings', 'reviews']).exec())
+    if (gamesError) {
+        console.error(`Error in GET /list/${req.params.id}/edit: Failed finding games: ${gamesError}}`)
+        res.status(500).render('server-error', { user: req.user })
+        return
+    }
+
+    res.render('list/edit', { list: list, user: req.user, games })
+})
+
+// Edit list
+router.put('/:id', isLoggedIn, async (req, res) => {
+    const [foundList, foundListError] = await handle(List.findOne({ _id: req.params.id }))
+
+    if (foundListError) {
+        console.error(`error in PUT /list/${req.params.id}: failed to find list ${req.params.id}: ${foundListError}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    if (!req.user._id.equals(foundList.author._id)) {
+        console.error(`error in PUT /list/${req.params.id}: User ${req.user._id} must be list author to edit.`)
+        res.status(403).render('bad-request', { user: req.user })
+        return
+    }
+
+    foundList.name = req.body.name
+    foundList.description = req.body.description
+    foundList.games = req.body.games
+
+    const [savedList, savedListError] = await handle(foundList.save())
+
+    if (savedListError) {
+        console.error(`error in PUT /list/${req.params.id}: failed to save list ${savedList._id} after updating: ${savedListError}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    res.redirect(`/list/${req.params.id}`)
+})
+
 // Soft delete list
 router.post('/:id/toggle-softdelete', isLoggedIn, async (req, res) => {
     const [foundList, foundListError] = await handle(List.findOne({ _id: req.params.id }))
@@ -112,7 +163,7 @@ router.post('/:id/toggle-softdelete', isLoggedIn, async (req, res) => {
         return
     }
 
-    if (!(req.user.isAdmin || req.user._id === foundList.author._id)) {
+    if (!(req.user.isAdmin || req.user._id.equals(foundList.author._id))) {
         console.log(`ListRouter.post(${req.params.id}): User (${req.user._id}) must be admin or author of list.`)
         res.status(403).render('bad-request', { user: req.user })
     }

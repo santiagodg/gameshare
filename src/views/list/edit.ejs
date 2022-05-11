@@ -1,0 +1,346 @@
+<%- include (".././partials/header") %>
+<%- include (".././partials/navbar") %>
+<div class="container py-5 h-100 main">
+  <div class="row">
+    <div class="col">
+      <h1 class="mb-0">New List</h1>
+      <div class="dropdown-divider mb-4"></div>
+      <form id="new-list" action="/list/<%= list._id %>?_method=PUT" method="POST">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <label for="list-name">Name of list</label>
+              <input class="form-control" id="list-name" type="text" name="name" form="new-list" required value="<%= list.name %>">
+            </div>
+            <div class="form-group">
+              <label for="list-description">Description</label>
+              <textarea class="form-control" id="list-description" name="description" form="new-list" rows="6"><%= list.description.replace('\n', '') %></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="input-group">
+              <select id="select-game" class="custom-select"></select>
+              <div class="input-group-append">
+                <button type="button" onclick="addGame()" id="add-game" class="btn btn-outline-primary text-uppercase font-weight-bold">Add game</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 text-right">
+            <input type="submit" class="btn btn-primary text-uppercase font-weight-bold" value="save">
+          </div>
+        </div>
+        <div class="row my-3">
+          <div class="col">
+            <div id="games-list-empty" class="rounded border game-list px-3 py-5 text-center">
+              <h2 class="mt-3">Your list is empty.</h2>
+              <p class="mb-3">Add games using the above selection.</p>
+            </div>
+            <div id="games-list-filled" class="rounded border game-list" style="display: none;"></div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+    const games = <%- JSON.stringify(games.sort((a, b) => (a.name <= b.name ? -1 : 1))) %>;
+
+    let addedGames = <%- JSON.stringify(list.games) %>;
+    let selectableGames = <%- (() => { 
+      result = games.sort((a, b) => (a.name <= b.name ? -1 : 1)).slice()
+      for (const listGame of list.games) {
+        const index = games.findIndex(game => game._id.equals(listGame._id))
+        result.splice(index, 1)
+        games.splice(index, 1)
+      }
+      return JSON.stringify(result)
+      })() %>;
+    
+    function updateGameSelectionOptions() {
+      const selectGame = document.getElementById('select-game')
+      selectGame.innerHTML = ''
+
+      // <option value="" selected>Choose a game</option>
+      const option = document.createElement('option')
+      option.setAttribute('value', '')
+      option.setAttribute('selected', 'selected')
+      option.innertText = 'Choose a game'
+
+      selectGame.appendChild(option)
+
+      for (const selectableGame of selectableGames) {
+        const option = document.createElement('option')
+        option.setAttribute('id', `game-option-${ selectableGame._id }`)
+        option.setAttribute('value', `${ selectableGame._id }`)
+        option.innerText = selectableGame.name
+
+        selectGame.appendChild(option)
+      }
+    }
+
+    updateGameSelectionOptions()
+
+    function updateSelectedGamesComponent() {
+      const selectGameElement = document.getElementById('select-game')
+      let isFirstGame = true
+
+      for (const addedGame of addedGames) {
+        if (isFirstGame) {
+          // Hide empty game list area
+          const gameListEmptyElement = document.getElementById('games-list-empty')
+          gameListEmptyElement.style.display = 'none'
+
+          // Create game element to put in list area
+          const gameRootDiv = document.createElement('div')
+          gameRootDiv.setAttribute('id', `selected-game-${addedGame._id}`)
+          
+          // Add hidden input element to root game div
+          const hiddenInputElement = document.createElement('input')
+          hiddenInputElement.setAttribute('type', 'hidden')
+          hiddenInputElement.setAttribute('name', 'games[]')
+          hiddenInputElement.setAttribute('value', addedGame._id)
+          hiddenInputElement.setAttribute('form', 'new-list')
+          gameRootDiv.appendChild(hiddenInputElement)
+
+          // Add visible game elements
+          const row = document.createElement('div')
+          row.classList.add('row', 'p-3')
+          const col1 = document.createElement('div')
+          col1.classList.add('col-2', 'text-center')
+          const image = document.createElement('img')
+          image.setAttribute('src', addedGame.image)
+          image.classList.add('w-100')
+          image.style.maxHeight = '100px'
+          image.style.objectFit = 'contain'
+          col1.appendChild(image)
+          row.appendChild(col1)
+          const col2 = document.createElement('div')
+          col2.classList.add('col-9')
+          const gameName = document.createElement('h3')
+          gameName.innerText = addedGame.name
+          col2.appendChild(gameName)
+          row.appendChild(col2)
+          const col3 = document.createElement('div')
+          col3.classList.add('col-1', 'text-right')
+          const deleteButton = document.createElement('button')
+          deleteButton.setAttribute('type', 'button')
+          deleteButton.setAttribute('onclick', `removeGame(${addedGame._id})`)
+          deleteButton.classList.add('btn', 'btn-outline-primary', 'text-uppercase', 'font-weight-bold')
+          deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16"><path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/></svg>'
+          deleteButton.onclick = (ev) => {
+            ev.preventDefault()
+            removeGame(addedGame)
+          }
+          col3.appendChild(deleteButton)
+          row.appendChild(col3)
+          gameRootDiv.appendChild(row)
+
+          // Add game to filled game list area
+          const gameListFilledElement = document.getElementById('games-list-filled')
+          gameListFilledElement.appendChild(gameRootDiv)
+
+          // Unhide filled games area
+          gameListFilledElement.style.display = 'block'
+
+          isFirstGame = false
+        } else {
+          // Create game element to put in list area
+          const gameRootDiv = document.createElement('div')
+          gameRootDiv.setAttribute('id', `selected-game-${addedGame._id}`)
+          gameRootDiv.classList.add('border-top')
+          
+          // Add hidden input element to root game div
+          const hiddenInputElement = document.createElement('input')
+          hiddenInputElement.setAttribute('type', 'hidden')
+          hiddenInputElement.setAttribute('name', 'games[]')
+          hiddenInputElement.setAttribute('value', addedGame._id)
+          hiddenInputElement.setAttribute('form', 'new-list')
+          gameRootDiv.appendChild(hiddenInputElement)
+
+          // Add visible game elements
+          const row = document.createElement('div')
+          row.classList.add('row', 'p-3')
+          const col1 = document.createElement('div')
+          col1.classList.add('col-2', 'text-center')
+          const image = document.createElement('img')
+          image.setAttribute('src', addedGame.image)
+          image.classList.add('w-100')
+          image.style.maxHeight = '100px'
+          image.style.objectFit = 'contain'
+          col1.appendChild(image)
+          row.appendChild(col1)
+          const col2 = document.createElement('div')
+          col2.classList.add('col-9')
+          const gameName = document.createElement('h3')
+          gameName.innerText = addedGame.name
+          col2.appendChild(gameName)
+          row.appendChild(col2)
+          const col3 = document.createElement('div')
+          col3.classList.add('col-1', 'text-right')
+          const deleteButton = document.createElement('button')
+          deleteButton.setAttribute('type', 'button')
+          deleteButton.setAttribute('onclick', `removeGame(${addedGame._id})`)
+          deleteButton.classList.add('btn', 'btn-outline-primary', 'text-uppercase', 'font-weight-bold')
+          deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16"><path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/></svg>'
+          deleteButton.onclick = (ev) => {
+            ev.preventDefault()
+            removeGame(addedGame)
+          }
+          col3.appendChild(deleteButton)
+          row.appendChild(col3)
+          gameRootDiv.appendChild(row)
+
+          // Add game to filled game list area
+          const gameListFilledElement = document.getElementById('games-list-filled')
+          gameListFilledElement.appendChild(gameRootDiv)
+        }
+      }
+    }
+
+    updateSelectedGamesComponent()
+
+    function removeGame(game) {
+      document.getElementById(`selected-game-${ game._id }`).remove()
+      selectableGames.push(game)
+      selectableGames.sort((a, b) => (a.name <= b.name ? -1 : 1))
+      updateGameSelectionOptions()
+    }
+
+    function addGame() {
+      // Get game id from select tag
+      const selectGameElement = document.getElementById('select-game')
+      const selectedGameId = selectGameElement.value
+
+      if (selectedGameId === '') {
+        return
+      }
+
+      const selectedGameIndex = selectableGames.findIndex(game => game._id === selectedGameId)
+      const selectedGame = selectableGames[selectedGameIndex]
+
+      // Add game to game list area
+      if (addedGames.length === 0) {
+        // Hide empty game list area
+        const gameListEmptyElement = document.getElementById('games-list-empty')
+        gameListEmptyElement.style.display = 'none'
+
+        // Create game element to put in list area
+        const gameRootDiv = document.createElement('div')
+        gameRootDiv.setAttribute('id', `selected-game-${selectedGameId}`)
+        
+        // Add hidden input element to root game div
+        const hiddenInputElement = document.createElement('input')
+        hiddenInputElement.setAttribute('type', 'hidden')
+        hiddenInputElement.setAttribute('name', 'games[]')
+        hiddenInputElement.setAttribute('value', selectedGameId)
+        hiddenInputElement.setAttribute('form', 'new-list')
+        gameRootDiv.appendChild(hiddenInputElement)
+
+        // Add visible game elements
+        const row = document.createElement('div')
+        row.classList.add('row', 'p-3')
+        const col1 = document.createElement('div')
+        col1.classList.add('col-2', 'text-center')
+        const image = document.createElement('img')
+        image.setAttribute('src', selectedGame.image)
+        image.classList.add('w-100')
+        image.style.maxHeight = '100px'
+        image.style.objectFit = 'contain'
+        col1.appendChild(image)
+        row.appendChild(col1)
+        const col2 = document.createElement('div')
+        col2.classList.add('col-9')
+        const gameName = document.createElement('h3')
+        gameName.innerText = selectedGame.name
+        col2.appendChild(gameName)
+        row.appendChild(col2)
+        const col3 = document.createElement('div')
+        col3.classList.add('col-1', 'text-right')
+        const deleteButton = document.createElement('button')
+        deleteButton.setAttribute('type', 'button')
+        deleteButton.setAttribute('onclick', `removeGame(${selectedGameId})`)
+        deleteButton.classList.add('btn', 'btn-outline-primary', 'text-uppercase', 'font-weight-bold')
+        deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16"><path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/></svg>'
+        deleteButton.onclick = (ev) => {
+          ev.preventDefault()
+          removeGame(selectedGame)
+        }
+        col3.appendChild(deleteButton)
+        row.appendChild(col3)
+        gameRootDiv.appendChild(row)
+
+        // Add game to filled game list area
+        const gameListFilledElement = document.getElementById('games-list-filled')
+        gameListFilledElement.appendChild(gameRootDiv)
+
+        // Unhide filled games area
+        gameListFilledElement.style.display = 'block'
+
+        // Remove game from selection option
+        selectableGames.splice(selectedGameIndex, 1)
+
+        addedGames.push(selectedGame)
+
+      } else {
+        // Create game element to put in list area
+        const gameRootDiv = document.createElement('div')
+        gameRootDiv.setAttribute('id', `selected-game-${selectedGameId}`)
+        gameRootDiv.classList.add('border-top')
+        
+        // Add hidden input element to root game div
+        const hiddenInputElement = document.createElement('input')
+        hiddenInputElement.setAttribute('type', 'hidden')
+        hiddenInputElement.setAttribute('name', 'games[]')
+        hiddenInputElement.setAttribute('value', selectedGameId.toString())
+        hiddenInputElement.setAttribute('form', 'new-list')
+        gameRootDiv.appendChild(hiddenInputElement)
+
+        // Add visible game elements
+        const row = document.createElement('div')
+        row.classList.add('row', 'p-3')
+        const col1 = document.createElement('div')
+        col1.classList.add('col-2', 'text-center')
+        const image = document.createElement('img')
+        image.setAttribute('src', selectedGame.image)
+        image.classList.add('w-100')
+        image.style.maxHeight = '100px'
+        image.style.objectFit = 'contain'
+        col1.appendChild(image)
+        row.appendChild(col1)
+        const col2 = document.createElement('div')
+        col2.classList.add('col-9')
+        const gameName = document.createElement('h3')
+        gameName.innerText = selectedGame.name
+        col2.appendChild(gameName)
+        row.appendChild(col2)
+        const col3 = document.createElement('div')
+        col3.classList.add('col-1', 'text-right')
+        const deleteButton = document.createElement('button')
+        deleteButton.setAttribute('type', 'button')
+        deleteButton.setAttribute('onclick', `removeGame(${selectedGameId})`)
+        deleteButton.classList.add('btn', 'btn-outline-primary', 'text-uppercase', 'font-weight-bold')
+        deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16"><path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/></svg>'
+        deleteButton.onclick = (ev) => {
+          ev.preventDefault()
+          removeGame(selectedGame)
+        }
+        col3.appendChild(deleteButton)
+        row.appendChild(col3)
+        gameRootDiv.appendChild(row)
+
+        // Add game to filled game list area
+        const gameListFilledElement = document.getElementById('games-list-filled')
+        gameListFilledElement.appendChild(gameRootDiv)
+
+        // Remove game from selection option
+        selectableGames.splice(selectedGameIndex, 1)
+
+        addedGames.push(selectedGame)
+      }
+
+      updateGameSelectionOptions()
+    }
+</script>
+<%- include (".././partials/footer") %>
