@@ -11,11 +11,23 @@ const CommentController = require('./comment')
 var router = express.Router()
 
 router.get('/', isLoggedIn, async (req, res) => {
-    const [lists, listsError] = await handle(List.find({ author: req.user._id }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'games', populate: { path: 'image' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
+    const [lists, listsError] = await handle(
+        List.find({
+            author: req.user._id,
+            deleted: false
+        }).populate(['author', 'likes', 'games', 'comments'])
+            .populate({
+                path: 'games',
+                populate: { path: 'image' },
+                options: { sort: { 'createdAt': 'desc' } }
+            })
+            .exec()
+    )
+
     if (listsError) {
         return res.status(400).render('bad-request', { user: req.user })
     }
-    console.log(lists)
+
     res.render('list/collection', { lists: lists, user: req.user })
 })
 
@@ -158,14 +170,15 @@ router.post('/:id/toggle-softdelete', isLoggedIn, async (req, res) => {
     const [foundList, foundListError] = await handle(List.findOne({ _id: req.params.id }))
 
     if (foundListError) {
-        console.log(foundListError)
+        console.error(`error in POST /list/${req.params.id}/toggle-softdelete: failed to find list ${req.params.id}: ${foundListError}`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }
 
-    if (!(req.user.isAdmin || req.user._id.equals(foundList.author._id))) {
-        console.log(`ListRouter.post(${req.params.id}): User (${req.user._id}) must be admin or author of list.`)
+    if (!req.user.isAdmin && !req.user._id.equals(foundList.author._id)) {
+        console.error(`error in POST /list/${req.params.id}/toggle-softdelete: User ${req.user._id} must be admin or author of list.`)
         res.status(403).render('bad-request', { user: req.user })
+        return
     }
 
     foundList.deleted = !foundList.deleted
@@ -173,7 +186,7 @@ router.post('/:id/toggle-softdelete', isLoggedIn, async (req, res) => {
     const [savedList, savedListError] = await handle(foundList.save())
 
     if (savedListError) {
-        console.log(savedListError)
+        console.error(`error in POST /list/${req.params.id}/toggle-softdelete: failed to save list ${savedList._id} after updating: ${savedListError}`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }
