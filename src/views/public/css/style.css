@@ -31,7 +31,7 @@ body {
     color: var(--font-color-medium)
 }
 
-a {
+a, .pink-text {
     color: var(--primary);
 }
 
@@ -208,4 +208,17 @@ input[type="email"], input[type="text"], input[type="password"], input[type="use
 
 .flex-child:first-child {
     margin-right: 20px;
-} 
+}
+
+.col-img {
+    width: 240px;
+    height: 290px;
+    
+    align-content: flex-start;
+}
+
+.single-img {
+    width: 240px;
+    height: 290px;
+    opacity: 0.7;
+}

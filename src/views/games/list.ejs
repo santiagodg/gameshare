@@ -1,7 +1,7 @@
 <%- include (".././partials/header") %>
 <%- include (".././partials/navbar") %>
 <link rel="stylesheet" href="/css/games/list.css">
-<div class="container py-5 h-100 main">
+<div class="container py-5 px-5 h-100 main">
     <div class="row no-gutters">
         <div class="col-12">
             <h1>Games</h1>
@@ -10,7 +10,7 @@
         <% games.forEach(game => { %>
             <div class="col-3 px-1 my-3 align-self-center">
                 <a href="/games/<%= game._id %>">
-                    <img class="w-100 rounded game" src="<%= game.image %>">
+                    <img class="w-100 rounded game single-img" src="<%= game.image %>">
                 </a>
                 <p class="text-center my-2" style="font-size: 0.75rem">
                     <span>&nbsp;&nbsp;&nbsp;🤍&nbsp;<%= game.reviews.length %> reviews</span>
