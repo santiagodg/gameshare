@@ -23,12 +23,44 @@
           </form>
       </div>
   <% } %>
+
+  <% if (filtered_by){ %>
+    <label class="text-white">Filter by</label>
+    <form action="/" action="GET" class="form-inline">
+      <div class="form-group">
+        <!-- <select id="filter-lists" class="custom-select">
+          <option selected name="filter" value="alphabet">Alphabet</option>
+          <option name="filter" value="likes">Likes</option>
+          <option name="filter" value="newest">Newest</option>
+        </select> -->
+        <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required>
+        <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
+      </div>
+    </form>
+  <% } else{ %>
+    <label class="text-white">Filter by</label>
+    <form action="/" action="GET" class="form-inline">
+      <div class="form-group">
+        <!-- <select id="filter-lists" class="custom-select">
+          <option selected name="filter" value="alphabet">Alphabet</option>
+          <option name="filter" value="likes">Likes</option>
+          <option name="filter" value="newest">Newest</option>
+        </select> -->
+        <input type="text" name="filter" placeholder="Search List Name ..." class="form-control searchbar" required>
+        <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
+      </div>
+    </form>
+  <% } %>
+  </div>
     <ul>
       <% if (current_user && lists && lists.length > 0) { %>
         <% lists.forEach(list => { %>
           <li> <a href="/list/<%= list._id %>"><%= list.name %></a> by <%= list.author.username %>
           <% if (!list.author.equals(current_user)) { %>
             <form action ='/list/<%= list._id %>' method="POST">
+              <% if (filtered_by && filtered_by == 'likes') { %>
+                <input type="hidden" name="filter" value="likes">
+              <% } %>
               <% var liked = false %>
               <% var likedId = "" %>
               <% list.likes.forEach(like => { %>

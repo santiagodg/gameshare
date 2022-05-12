@@ -110,7 +110,41 @@ router.post('/:id', isLoggedIn, async (req, res) => {
                 return res.status(400).render('bad-request', { user: req.user })
             }
         }
-        res.redirect('/')
+
+        if (req.body.filter && req.body.filter == 'likes') {
+            // const [lists, listsError] = await handle(List.find().sort({ 'name' : 'asc' }).populate(['author', 'likes', 'games', 'comments']).exec())
+            const [lists, listsError] = await handle(List.aggregate([
+                {
+                    $project: {
+                        "name": 1,
+                        "description": 1,
+                        "likes" : 1,
+                        "amountLikes": { "$size" : "$likes" },
+                        "comments": 1,
+                        "author": 1,
+                        "deleted": 1,
+                        "createdAt": 1
+                    }
+                }, { "$sort": { "amountLikes" : -1 } }
+            ]))
+
+            if (listsError) {
+                res.status(404).render('not-found')
+                return
+            }        
+
+            const [listsPopulated, populatedError] = await handle(List.populate(lists, ['author', 'likes', 'games']))
+
+            if (populatedError) {
+                res.status(404).render('not-found')
+                return
+            }  
+
+            res.render('home/home', { lists: listsPopulated, filtered_by : req.body.filter, searched_name: req.query.search, user: req.user })
+
+        } else {
+            res.redirect('/')
+        }
     }
 })
 
