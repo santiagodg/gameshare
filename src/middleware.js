@@ -1,3 +1,7 @@
+const Comment = require('./models/comment')
+const { handle } = require('./controllers/util/util')
+
+
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
         console.log("You must be signed in first")
@@ -28,8 +32,13 @@ module.exports.noCache = (req, res, next) => {
 // Validating if user has the proper authorization to act upon a comment
 module.exports.isCommentAuthorOrAdmin = async(req, res, next) => {
     if(!req.user.isAdmin){
-        const { commentID } = req.params
-        const comment = await Comment.findById(commentID)
+        console.log(req.user._id)
+        const commentId  = req.params.commentId
+        const [comment, commentError] = await handle(Comment.findById(commentId))
+        if (commentError){
+            return res.status(400).render('bad-request', { user: req.user })
+        }
+
         if(!comment.author._id.equals(req.user._id)){
             console.log('Unauthorized action')
             req.flash('error', 'You are not authorized to do that.')

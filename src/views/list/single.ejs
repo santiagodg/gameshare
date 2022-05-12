@@ -68,6 +68,7 @@
                         <div class="col-8">
                             <p><%= comment.text %></p>
                         </div>
+                        <% if ( user.isAdmin || user._id.equals(comment.author._id) ) { %>
                         <div class="offset-1 col-1 text-right">
                             <form action ='/list/<%= list._id %>/comments/<%= comment._id %>?_method=DELETE' method="POST">
                                 <button class="btn btn-outline-primary" type="submit" name="listOfComment" value="<%= list._id %>">
@@ -77,6 +78,7 @@
                                 </button>
                             </form>
                         </div>
+                        <% } %>
                     </div>
                     <div class="dropdown-divider"></div>
                 <% }) %>
