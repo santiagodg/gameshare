@@ -9,4 +9,4 @@ const escapeRegex = function (text) {
 };
 
 module.exports.handle = handle;
-module.exports.escapeRegex = this.escapeRegex
+module.exports.escapeRegex = escapeRegex

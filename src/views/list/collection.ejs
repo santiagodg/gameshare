@@ -7,6 +7,27 @@
                 <button class="btn btn-outline-primary float-right submit-button">Create New List</button>
             </form>
             <h1>My Lists</h1>
+            <% if (searched_name){ %>
+                <div class="d-flex mb-4">
+                    <form action="/list" action="GET" class="form-inline">
+                        <div class="form-group">
+                            <input type="text" name="search" value="<%= searched_name %>" class="form-control searchbar" required>
+                            <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
+                        </div>	
+                    </form>
+                    <button onclick="location.href = '/list';" class="btn1 btn-default searchbtn red ml-1">Clear</button>
+                </div>
+            <% }else{ %>
+                <div class="d-flex">
+                    <form action="/list" action="GET" class="form-inline">
+                        <div class="form-group">
+                            <input type="text" name="search" placeholder="Search List Name ..." class="form-control searchbar" required>
+                            <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
+                        </div>	
+                    </form>
+                </div>
+            <% } %>
+
             <% if (current_user && lists && lists.length > 0) { %>
                 <% lists.forEach(list => { %>
                     <div class="list-card my-3 py-4 pl-4">

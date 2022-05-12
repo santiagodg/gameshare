@@ -90,5 +90,6 @@ mongoose.connect(dbUrl, {
   })
 
 app.get("*", (req, res) => {
+  res.render('not-found')
   // Message error for later
 })

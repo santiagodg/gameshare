@@ -2,7 +2,7 @@ const express = require('express')
 const req = require('express/lib/request')
 const mongoose = require('mongoose')
 const { isLoggedIn, isAdmin } = require('../middleware')
-const { handle } = require('./util/util')
+const { handle, escapeRegex } = require('./util/util')
 const Game = require('../models/game')
 const List = require('../models/list')
 const Like = require('../models/like')
@@ -11,24 +11,41 @@ const CommentController = require('./comment')
 var router = express.Router()
 
 router.get('/', isLoggedIn, async (req, res) => {
-    const [lists, listsError] = await handle(
-        List.find({
-            author: req.user._id,
-            deleted: false
-        }).populate(['author', 'likes', 'games', 'comments'])
-            .populate({
-                path: 'games',
-                populate: { path: 'image' },
-                options: { sort: { 'createdAt': 'desc' } }
-            })
-            .exec()
-    )
+    if (req.query.search) {
+        const regex = new RegExp(escapeRegex(req.query.search), 'gi')
+        const [lists, listsError] = await handle(List.find({ author: req.user._id, name: regex, deleted: false }).sort({ 'name' : 'asc' }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'games', populate: { path: 'image' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
 
-    if (listsError) {
-        return res.status(400).render('bad-request', { user: req.user })
+        if (listsError) {
+             res.status(404).render('not-found')
+            return
+        }
+        if (lists.length < 1) {
+            req.flash('error', 'No list name matched, please try again!')
+            res.redirect('back')
+        } else {
+            res.render('list/collection', { lists: lists, searched_name: req.query.search, user: req.user })
+        }
+
+    } else {
+        const [lists, listsError] = await handle(
+            List.find({
+                author: req.user._id,
+                deleted: false
+            }).populate(['author', 'likes', 'games', 'comments'])
+                .populate({
+                    path: 'games',
+                    populate: { path: 'image' },
+                    options: { sort: { 'createdAt': 'desc' } }
+                })
+                .exec()
+        )
+
+        if (listsError) {
+            return res.status(400).render('bad-request', { user: req.user })
+        }
+
+        res.render('list/collection', { lists: lists, searched_name: undefined, user: req.user })
     }
-
-    res.render('list/collection', { lists: lists, user: req.user })
 })
 
 router.get('/new', isLoggedIn, async (req, res) => {
@@ -110,7 +127,41 @@ router.post('/:id', isLoggedIn, async (req, res) => {
                 return res.status(400).render('bad-request', { user: req.user })
             }
         }
-        res.redirect('/')
+
+        if (req.body.filter && req.body.filter == 'likes') {
+            // const [lists, listsError] = await handle(List.find().sort({ 'name' : 'asc' }).populate(['author', 'likes', 'games', 'comments']).exec())
+            const [lists, listsError] = await handle(List.aggregate([
+                {
+                    $project: {
+                        "name": 1,
+                        "description": 1,
+                        "likes" : 1,
+                        "amountLikes": { "$size" : "$likes" },
+                        "comments": 1,
+                        "author": 1,
+                        "deleted": 1,
+                        "createdAt": 1
+                    }
+                }, { "$sort": { "amountLikes" : -1 } }
+            ]))
+
+            if (listsError) {
+                res.status(404).render('not-found')
+                return
+            }        
+
+            const [listsPopulated, populatedError] = await handle(List.populate(lists, ['author', 'likes', 'games']))
+
+            if (populatedError) {
+                res.status(404).render('not-found')
+                return
+            }  
+
+            res.render('home/home', { lists: listsPopulated, filtered_by : req.body.filter, searched_name: req.query.search, user: req.user })
+
+        } else {
+            res.redirect('/')
+        }
     }
 })
 

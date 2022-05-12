@@ -7,6 +7,27 @@
             <h1>Games</h1>
             <div class="dropdown-divider"></div>
         </div>
+        <% if (searched_title){ %>
+            <div class="col-10">
+                <form action="/games" action="GET" class="form-block">
+                    <div class="form-group">
+                        <input type="text" name="search" value="<%= searched_title %>" class="form-control searchbar" required>
+                        <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
+                    </div>	
+                </form>
+                <button onclick="location.href = '/games';" class="btn1 btn-default searchbtn red ml-1">Clear</button>
+            </div>
+        <% }else{ %>
+            <div class="col-10">
+                <form action="/games" action="GET" class="form-block">
+                    <div class="form-group">
+                        <input type="text" name="search" placeholder="Search Game Name ..." class="form-control searchbar" required>
+                        <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
+                    </div>	
+                </form>
+            </div>
+        <% } %>
+        <br>
         <% games.forEach(game => { %>
             <div class="col-3 px-1 my-3 align-self-center">
                 <a href="/games/<%= game._id %>" title="<%= game.name%>">
