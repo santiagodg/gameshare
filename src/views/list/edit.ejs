@@ -206,6 +206,14 @@
       selectableGames.push(game)
       selectableGames.sort((a, b) => (a.name <= b.name ? -1 : 1))
       updateGameSelectionOptions()
+
+      // Show the empty list message again if empty
+      const removedGameIndex = addedGames.findIndex(addedGames => addedGames._id === game._id)
+      addedGames.splice(removedGameIndex, 1)
+      if (addedGames.length === 0) {
+        const gameListEmptyElement = document.getElementById('games-list-empty')
+        gameListEmptyElement.style.display = 'block'
+      }
     }
 
     function addGame() {
