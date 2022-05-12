@@ -10,7 +10,43 @@ const ReviewModel = require('../models/review')
 var router = express.Router()
 
 router.get("/", isLoggedIn, async function (req, res) {
-    if (req.query.search) {
+    if (req.query.filter) {
+        if (req.query.filter == "alphabet") {
+            const [games, gamesError] = await handle(GameModel.find().sort({ 'name' : 'asc' }).populate(['ratings', 'reviews']).exec())
+
+            if (gamesError) {
+                res.status(404).render('not-found')
+                return
+            }
+            res.render('games/list', { games, user: req.user, filtered_by : req.query.filter, searched_title: undefined, user: req.user })
+        } else if (req.query.filter == "ratings") {
+            const [games, gamesError] = await handle(GameModel.find().sort({ 'avgRating' : 'desc' }).populate(['ratings', 'reviews']).exec())
+
+            if (gamesError) {
+                res.status(404).render('not-found')
+                return
+            }
+            res.render('games/list', { games, user: req.user, filtered_by : req.query.filter, searched_title: undefined, user: req.user })
+
+        } else if (req.query.filter == "videogame"){
+            const [games, gamesError] = await handle(GameModel.find({ isVideogame: { $ne: false } }).populate(['ratings', 'reviews']).exec())
+
+            if (gamesError) {
+                res.status(404).render('not-found')
+                return
+            }
+            res.render('games/list', { games, user: req.user, filtered_by : req.query.filter, searched_title: undefined, user: req.user })
+        } else {
+            const [games, gamesError] = await handle(GameModel.find({ isVideogame: { $ne: true } }).populate(['ratings', 'reviews']).exec())
+
+            if (gamesError) {
+                res.status(404).render('not-found')
+                return
+            }
+            res.render('games/list', { games, user: req.user, filtered_by : req.query.filter, searched_title: undefined, user: req.user })
+        }
+
+    } else if (req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
         const [games, gamesError] = await handle(GameModel.find({ name: regex, deleted: false }).populate(['ratings', 'reviews']).sort({ 'name': 'asc' }));
 
@@ -24,7 +60,7 @@ router.get("/", isLoggedIn, async function (req, res) {
             req.flash('error', 'No game title matched, please try again!')
             res.redirect('back');
         } else {
-            res.render('games/list', { games, user: req.user, searched_title: req.query.search, page: 'games' });
+            res.render('games/list', { games, user: req.user, filtered_by: undefined, searched_title: req.query.search, page: 'games' });
         }
     } else {
         const [games, gamesError] = await handle(GameModel.find({ deleted: false }).populate(['ratings', 'reviews']).sort({ 'name': 'asc' }));
@@ -34,7 +70,7 @@ router.get("/", isLoggedIn, async function (req, res) {
             return;
         }
 
-        res.render('games/list', { games, user: req.user, searched_title: undefined, page: 'games' });
+        res.render('games/list', { games, user: req.user, filtered_by: undefined, searched_title: undefined, page: 'games' });
     }
 });
 

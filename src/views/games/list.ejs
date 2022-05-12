@@ -28,6 +28,56 @@
             </div>
         <% } %>
         <br>
+        <% if (filtered_by){ %>
+            <div class="col-10">
+                <label class="text-white">Filter by</label>
+                <form action="/games" action="GET" class="form-inline">
+                <div class="form-group">
+                    <select name="filter" class="custom-select">
+                    <% if (filtered_by == 'alphabet') { %>
+                        <option selected value="alphabet">Alphabet</option>
+                        <option value="ratings">Ratings</option>
+                        <option value="videogame">Video game</option>
+                        <option value="boardgame">Board game</option>
+                    <% }else if (filtered_by == 'ratings') { %>
+                        <option value="alphabet">Alphabet</option>
+                        <option selected value="ratings">Ratings</option>
+                        <option value="videogame">Video game</option>
+                        <option value="boardgame">Board game</option>
+                    <% } else if (filtered_by == 'videogame'){ %>
+                        <option value="alphabet">Alphabet</option>
+                        <option value="ratings">Ratings</option>
+                        <option selected value="videogame">Video game</option>
+                        <option value="boardgame">Board game</option>
+                    <% } else { %>
+                        <option value="alphabet">Alphabet</option>
+                        <option value="ratings">Ratings</option>
+                        <option value="videogame">Video game</option>
+                        <option selected value="boardgame">Board game</option>
+                    <% } %>
+                    </select>
+                <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
+                    <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
+                </div>
+                </form>
+            </div>
+          <% } else{ %>
+            <div class="col-10">
+                <label class="text-white">Filter by</label>
+                <form action="/games" action="GET" class="form-inline">
+                <div class="form-group">
+                    <select name="filter" class="custom-select">
+                        <option selected value="alphabet">Alphabet</option>
+                        <option value="ratings">Ratings</option>
+                        <option value="videogame">Video game</option>
+                        <option value="boardgame">Board game</option>
+                    </select>
+                    <!-- <input type="text" name="filter" placeholder="Select filter ..." class="form-control searchbar" required> -->
+                    <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
+                </div>
+                </form>
+            </div>
+          <% } %>
         <% games.forEach(game => { %>
             <div class="col-3 px-1 my-3 align-self-center">
                 <a href="/games/<%= game._id %>" title="<%= game.name%>">
