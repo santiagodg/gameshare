@@ -28,12 +28,22 @@
     <label class="text-white">Filter by</label>
     <form action="/" action="GET" class="form-inline">
       <div class="form-group">
-        <!-- <select id="filter-lists" class="custom-select">
-          <option selected name="filter" value="alphabet">Alphabet</option>
-          <option name="filter" value="likes">Likes</option>
-          <option name="filter" value="newest">Newest</option>
-        </select> -->
-        <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required>
+        <select name="filter" class="custom-select">
+          <% if (filtered_by == 'alphabet') { %>
+            <option selected value="alphabet">Alphabet</option>
+            <option value="likes">Likes</option>
+            <option value="newest">Newest</option>
+          <% }else if (filtered_by == 'likes') { %>
+            <option value="alphabet">Alphabet</option>
+            <option selected value="likes">Likes</option>
+            <option value="newest">Newest</option>
+          <% } else { %>
+            <option value="alphabet">Alphabet</option>
+            <option value="likes">Likes</option>
+            <option selected value="newest">Newest</option>
+          <% } %>
+        </select>
+        <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
         <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
       </div>
     </form>
@@ -41,12 +51,12 @@
     <label class="text-white">Filter by</label>
     <form action="/" action="GET" class="form-inline">
       <div class="form-group">
-        <!-- <select id="filter-lists" class="custom-select">
-          <option selected name="filter" value="alphabet">Alphabet</option>
-          <option name="filter" value="likes">Likes</option>
-          <option name="filter" value="newest">Newest</option>
-        </select> -->
-        <input type="text" name="filter" placeholder="Search List Name ..." class="form-control searchbar" required>
+        <select name="filter" class="custom-select">
+          <option selected value="alphabet">Alphabet</option>
+          <option value="likes">Likes</option>
+          <option value="newest">Newest</option>
+        </select>
+        <!-- <input type="text" name="filter" placeholder="Select filter ..." class="form-control searchbar" required> -->
         <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
       </div>
     </form>
