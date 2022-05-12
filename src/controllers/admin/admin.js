@@ -115,7 +115,7 @@ router.delete('/games/:gameID', isLoggedIn, isAdmin, async (req, res) => {
 });
 
 router.get("/users", isLoggedIn, isAdmin, async (req, res) => {
-    const [users, usersError] = await handle(UserModel.find().exec());
+    const [users, usersError] = await handle(UserModel.find({ _id : { $ne: req.user._id }}).exec());
 
     if (usersError) {
         console.log(usersError);
