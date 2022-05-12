@@ -2,9 +2,27 @@
 <%- include (".././partials/navbar") %>
 <div class="container py-5 h-100 main">
   <ul>
-    <li><a href="/admin">Admin</a></li>
-    <li><a href="/games">Games</a></li>
     <strong>Lists</strong>
+    <% if (searched_name){ %>
+      <div class="d-flex mb-4">
+          <form action="/" action="GET" class="form-inline">
+              <div class="form-group">
+                  <input type="text" name="search" value="<%= searched_name %>" class="form-control searchbar" required>
+                  <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
+              </div>	
+          </form>
+          <button onclick="location.href = '/';" class="btn1 btn-default searchbtn red ml-1">Clear</button>
+      </div>
+  <% }else{ %>
+      <div class="d-flex">
+          <form action="/" action="GET" class="form-inline">
+              <div class="form-group">
+                  <input type="text" name="search" placeholder="Search List Name ..." class="form-control searchbar" required>
+                  <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
+              </div>	
+          </form>
+      </div>
+  <% } %>
     <ul>
       <% if (current_user && lists && lists.length > 0) { %>
         <% lists.forEach(list => { %>
