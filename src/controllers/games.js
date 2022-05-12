@@ -20,7 +20,7 @@ router.get("/", isLoggedIn, async function (req, res) {
         }
 
         if (games.length < 1) {
-            console.log("No game title matched, please try again!");
+            // console.log("No game title matched, please try again!");
             req.flash('error', 'No game title matched, please try again!')
             res.redirect('back');
         } else {
