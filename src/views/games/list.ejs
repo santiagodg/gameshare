@@ -84,12 +84,19 @@
                     <img class="game-card w-100 rounded single-img" src="<%= game.image %>">
                 </a>
                 <p class="text-center my-2" style="font-size: 0.75rem">
-                    <span><span class="pink-text">&#9829;&nbsp;</span><%= game.reviews.length %> Reviews</span>
+                    <% if(game.isVideogame){ %>
+                        <span>Video Game</span>
+                    <% } else{ %>  
+                        <span>Board Game</span>
+                    <% } %>
+                    <span><span class="pink-text">&nbsp;&nbsp;&#9829;&nbsp;</span><%= game.reviews.length %> Reviews</span>
                     <% if(game.avgRating > 0){ %>
                         <span><span class="pink-text">&nbsp;&nbsp; &#9733;&nbsp;</span><%= game.avgRating.toFixed(2)%> Rating</span>
+                    <% } else if (game.avgRating == 0) { %>
+                        <span><span class="pink-text">&nbsp; &#9733;&nbsp;</span>0 Rating</span>
                     <% } else{ %>  
-                        <span><span class="pink-text">&nbsp;&nbsp; &#9733;&nbsp;</span>0 Rating</span>
-                     <% } %>
+                        <span><span class="pink-text">&nbsp; &#9733;&nbsp;</span>No Ratings</span>
+                    <% } %>
                 </p>
             </div>
         <% }) %>

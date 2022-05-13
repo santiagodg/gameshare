@@ -6,69 +6,79 @@
             <form action="/list/new" class="inline">
                 <button class="btn btn-outline-primary float-right submit-button">Create New List</button>
             </form>
-            <h1>My Lists</h1>
-            <% if (searched_name){ %>
-                <div class="d-flex mb-4">
-                    <form action="/list" action="GET" class="form-inline">
-                        <div class="form-group">
-                            <input type="text" name="search" value="<%= searched_name %>" class="form-control searchbar" required>
-                            <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
-                        </div>	
-                    </form>
-                    <button onclick="location.href = '/list';" class="btn1 btn-default searchbtn red ml-1">Clear</button>
-                </div>
-            <% }else{ %>
-                <div class="d-flex">
-                    <form action="/list" action="GET" class="form-inline">
-                        <div class="form-group">
-                            <input type="text" name="search" placeholder="Search List Name ..." class="form-control searchbar" required>
-                            <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
-                        </div>	
-                    </form>
-                </div>
-            <% } %>
-
-            <% if (filtered_by){ %>
-                <label class="text-white">Filter by</label>
-                <form action="/list" action="GET" class="form-inline">
-                <div class="form-group">
-                    <select name="filter" class="custom-select">
-                    <% if (filtered_by == 'alphabet') { %>
-                        <option selected value="alphabet">Alphabet</option>
-                        <option value="likes">Likes</option>
-                        <option value="newest">Newest</option>
-                    <% }else if (filtered_by == 'likes') { %>
-                        <option value="alphabet">Alphabet</option>
-                        <option selected value="likes">Likes</option>
-                        <option value="newest">Newest</option>
-                    <% } else { %>
-                        <option value="alphabet">Alphabet</option>
-                        <option value="likes">Likes</option>
-                        <option selected value="newest">Newest</option>
-                    <% } %>
-                    </select>
-                    <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
-                    <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
-                </div>
-                </form>
-            <% } else{ %>
-                <label class="text-white">Filter by</label>
-                <form action="/list" action="GET" class="form-inline">
-                <div class="form-group">
-                    <select name="filter" class="custom-select">
-                    <option selected value="alphabet">Alphabet</option>
-                    <option value="likes">Likes</option>
-                    <option value="newest">Newest</option>
-                    </select>
-                    <!-- <input type="text" name="filter" placeholder="Select filter ..." class="form-control searchbar" required> -->
-                    <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
-                </div>
-                </form>
-            <% } %>
-
+            <h1 class="mb-4" >My Lists</h1>
             <% if (current_user && lists && lists.length > 0) { %>
+                <div class="flex-container mb-4">
+                    <% if (filtered_by){ %>
+                        <div class="d-flex">
+                            <label class="pt-2 mr-2">Filter by: </label>
+                            <form action="/list" action="GET" class="form-inline">
+                            <div class="form-group filter">
+                                <select name="filter" class="custom-select filter">
+                                <% if (filtered_by == 'alphabet') { %>
+                                    <option selected value="alphabet">Alphabet</option>
+                                    <option value="likes">Likes</option>
+                                    <option value="newest">Newest</option>
+                                <% }else if (filtered_by == 'likes') { %>
+                                    <option value="alphabet">Alphabet</option>
+                                    <option selected value="likes">Likes</option>
+                                    <option value="newest">Newest</option>
+                                <% } else { %>
+                                    <option value="alphabet">Alphabet</option>
+                                    <option value="likes">Likes</option>
+                                    <option selected value="newest">Newest</option>
+                                <% } %>
+                                </select>
+                                <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
+                                <input type="submit" value="Filter" class="btn btn-outline-primary ml-1">
+                            </div>
+                            </form>
+                        </div>
+                    <% } else{ %>
+                        <div class="d-flex">
+                            <label class="pt-2 mr-2">Filter by:</label>
+                            <form action="/list" action="GET" class="form-inline">
+                            <div class="form-group">
+                                <select name="filter" class="custom-select filter">
+                                    <option selected value="alphabet">Alphabet</option>
+                                    <option value="likes">Likes</option>
+                                    <option value="newest">Newest</option>
+                                </select>
+                                <!-- <input type="text" name="filter" placeholder="Select filter ..." class="form-control searchbar" required> -->
+                                <input type="submit" value="Filter" class="btn btn-outline-primary ml-1">
+                            </div>
+                            </form>
+                        </div>
+                    <% } %>
+                    <div class="ml-2">
+                        <% if (searched_name){ %>
+                            <div class="d-flex">
+                                <div class="vr ml-4 mr-4"></div>
+                                <label class="pt-2 mr-2">Search by: </label>
+                                <form action="/list" action="GET" class="form-inline">
+                                    <div class="form-group">
+                                        <input type="text" name="search" value="<%= searched_name %>" class="form-control searchbar" required>
+                                        <input type="submit" value="Search" class="btn btn-outline-primary searchbtn ml-1">
+                                    </div>	
+                                </form>
+                                <button onclick="location.href = '/list';" class="btn btn-primary searchbtn red ml-1">Clear</button>
+                            </div>
+                        <% }else{ %>
+                            <div class="d-flex">
+                                <div class="vr ml-4 mr-4"></div>
+                                <label class="pt-2 mr-2">Search by: </label>
+                                <form action="/list" action="GET" class="form-inline">
+                                    <div class="form-group">
+                                        <input type="text" name="search" placeholder="Search List Name..." class="form-control searchbar" required>
+                                        <input type="submit" value="Search" class="btn btn-outline-primary searchbtn ml-1">
+                                    </div>	
+                                </form>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
                 <% lists.forEach(list => { %>
-                    <div class="list-card my-3 py-4 pl-4">
+                    <div class="list-card my-4 py-4 pl-4">
                         <div class="flex-container">
                             <h5 class="flex-child pb-2"><a href="/list/<%= list._id %>"><%= list.name %></a></h5>  
                             <div class="flex-child mr-4 text-right">
@@ -95,6 +105,10 @@
                         <% } %>
                     </div>
                 <% }) %>
+            <% } else{ %>
+                <div class="list-card my-4 py-4 pl-4">
+                    <p class="list-empty text-center py-4">You currently do not have any lists. Try creating one!</p>
+                </div>
             <% } %>
         </div>
     </div>

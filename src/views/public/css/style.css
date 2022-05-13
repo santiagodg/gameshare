@@ -60,6 +60,15 @@ body {
     font-size: 18px;
 }
 
+.nav-signed {
+    color: var(--primary);
+    font-weight: normal;
+    font-size: 16px;
+    display: block;
+    padding: .7rem 4px;
+    text-align: right;
+}
+
 .nav-link:hover {
     color: rgb(174, 134, 191);
 }
@@ -193,6 +202,13 @@ input[type="email"], input[type="text"], input[type="password"], input[type="use
     opacity: 0.7;
 }
 
+.list-empty {
+    margin-bottom: .5rem;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.2;
+}
+
 .flex-container {
     display: flex;
 }
@@ -219,4 +235,14 @@ input[type="email"], input[type="text"], input[type="password"], input[type="use
 
 .game-card:hover {
     opacity: 0.6;
+}
+
+.filter {
+    min-width: 175px;
+}
+
+.vr {
+    background-color: var(--font-color-medium);;
+    height: 40px;
+    width: 1px;
 }
