@@ -127,9 +127,9 @@
         col1.classList.add('col-2', 'text-center')
         const image = document.createElement('img')
         image.setAttribute('src', selectedGame.image)
-        image.classList.add('w-100')
-        image.style.maxHeight = '100px'
-        image.style.objectFit = 'contain'
+        image.style.height = '120px'
+        image.style.width = '112px'
+        // image.style.objectFit = 'contain'
         col1.appendChild(image)
         row.appendChild(col1)
         const col2 = document.createElement('div')
@@ -186,9 +186,8 @@
         col1.classList.add('col-2', 'text-center')
         const image = document.createElement('img')
         image.setAttribute('src', selectedGame.image)
-        image.classList.add('w-100')
-        image.style.maxHeight = '100px'
-        image.style.objectFit = 'contain'
+        image.style.height = '120px'
+        image.style.width = '112px'
         col1.appendChild(image)
         row.appendChild(col1)
         const col2 = document.createElement('div')
