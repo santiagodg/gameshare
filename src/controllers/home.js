@@ -12,7 +12,7 @@ router.get('/', async function (req, res) {
     } else {
         if (req.query.filter) {
             if (req.query.filter == "alphabet") {
-                const [lists, listsError] = await handle(List.find().sort({ 'name' : 'asc' }).populate(['author', 'likes', 'games', 'comments']).exec())
+                const [lists, listsError] = await handle(List.find({ deleted: false }).sort({ 'name' : 'asc' }).populate(['author', 'likes', 'games', 'comments']).exec())
     
                 if (listsError) {
                     res.status(404).render('not-found')
@@ -29,12 +29,13 @@ router.get('/', async function (req, res) {
                             "description": 1,
                             "likes" : 1,
                             "amountLikes": { "$size" : "$likes" },
+                            "games": 1,
                             "comments": 1,
                             "author": 1,
                             "deleted": 1,
                             "createdAt": 1
                         }
-                    }, { "$sort": { "amountLikes" : -1 } }
+                    }, { "$match" : { deleted: { "$eq": false } } }, { "$sort": { "amountLikes" : -1 } }
                 ]))
     
                 if (listsError) {
@@ -52,7 +53,7 @@ router.get('/', async function (req, res) {
                 res.render('home/home', { lists: listsPopulated, filtered_by : req.query.filter, searched_name: undefined, user: req.user })
 
             }else {
-                const [lists, listsError] = await handle(List.find().sort({ 'createdAt' : 'desc' }).populate(['author', 'likes', 'games', 'comments']).exec())
+                const [lists, listsError] = await handle(List.find({ deleted: false }).sort({ 'createdAt' : 'desc' }).populate(['author', 'likes', 'games', 'comments']).exec())
     
                 if (listsError) {
                     res.status(404).render('not-found')
