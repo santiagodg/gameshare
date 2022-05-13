@@ -12,7 +12,7 @@ var router = express.Router()
 router.get("/", isLoggedIn, async function (req, res) {
     if (req.query.filter) {
         if (req.query.filter == "alphabet") {
-            const [games, gamesError] = await handle(GameModel.find().sort({ 'name' : 'asc' }).populate(['ratings', 'reviews']).exec())
+            const [games, gamesError] = await handle(GameModel.find({ deleted: false }).sort({ 'name' : 'asc' }).populate(['ratings', 'reviews']).exec())
 
             if (gamesError) {
                 res.status(404).render('not-found')
@@ -20,7 +20,7 @@ router.get("/", isLoggedIn, async function (req, res) {
             }
             res.render('games/list', { games, user: req.user, filtered_by : req.query.filter, searched_title: undefined, user: req.user })
         } else if (req.query.filter == "ratings") {
-            const [games, gamesError] = await handle(GameModel.find().sort({ 'avgRating' : 'desc' }).populate(['ratings', 'reviews']).exec())
+            const [games, gamesError] = await handle(GameModel.find({ deleted: false }).sort({ 'avgRating' : 'desc' }).populate(['ratings', 'reviews']).exec())
 
             if (gamesError) {
                 res.status(404).render('not-found')
@@ -29,7 +29,7 @@ router.get("/", isLoggedIn, async function (req, res) {
             res.render('games/list', { games, user: req.user, filtered_by : req.query.filter, searched_title: undefined, user: req.user })
 
         } else if (req.query.filter == "videogame"){
-            const [games, gamesError] = await handle(GameModel.find({ isVideogame: { $ne: false } }).populate(['ratings', 'reviews']).exec())
+            const [games, gamesError] = await handle(GameModel.find({ deleted: false, isVideogame: true }).populate(['ratings', 'reviews']).exec())
 
             if (gamesError) {
                 res.status(404).render('not-found')
@@ -37,7 +37,7 @@ router.get("/", isLoggedIn, async function (req, res) {
             }
             res.render('games/list', { games, user: req.user, filtered_by : req.query.filter, searched_title: undefined, user: req.user })
         } else {
-            const [games, gamesError] = await handle(GameModel.find({ isVideogame: { $ne: true } }).populate(['ratings', 'reviews']).exec())
+            const [games, gamesError] = await handle(GameModel.find({ deleted: false, isVideogame: false }).populate(['ratings', 'reviews']).exec())
 
             if (gamesError) {
                 res.status(404).render('not-found')
