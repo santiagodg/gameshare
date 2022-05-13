@@ -11,7 +11,61 @@ const CommentController = require('./comment')
 var router = express.Router()
 
 router.get('/', isLoggedIn, async (req, res) => {
-    if (req.query.search) {
+    if (req.query.filter) {
+        if (req.query.filter == "alphabet") {
+            const [lists, listsError] = await handle(List.find({ author: req.user._id, deleted: false }).sort({ 'name' : 'asc' }).populate(['likes', 'games', 'comments']).exec())
+
+            if (listsError) {
+                res.status(404).render('not-found')
+                return
+            }
+
+            res.render('list/collection', { lists: lists, filtered_by : req.query.filter, searched_name: undefined, user: req.user })
+
+        } else if (req.query.filter == "likes") {
+            const [lists, listsError] = await handle(List.aggregate([
+                {
+                    $project: {
+                        "name": 1,
+                        "description": 1,
+                        "likes" : 1,
+                        "amountLikes": { "$size" : "$likes" },
+                        "comments": 1,
+                        "games": 1,
+                        "author": 1,
+                        "deleted": 1,
+                        "createdAt": 1
+                    }
+                }, { "$match" : { author: { "$eq": req.user._id } } }, { "$match" : { deleted: { "$eq": false } } }, { "$sort": { "amountLikes" : -1 } }
+            ]))
+
+            // { "$match" : { author: { "$eq": req.user._id } } }
+
+            if (listsError) {
+                res.status(404).render('not-found')
+                return
+            }        
+
+            const [listsPopulated, populatedError] = await handle(List.populate(lists, ['author', 'likes', 'games']))
+
+            if (populatedError) {
+                res.status(404).render('not-found')
+                return
+            }  
+
+            res.render('list/collection', { lists: listsPopulated, filtered_by : req.query.filter, searched_name: undefined, user: req.user })
+
+        }else {
+            const [lists, listsError] = await handle(List.find({ author: req.user._id, deleted: false }).sort({ 'createdAt' : 'desc' }).populate(['author', 'likes', 'games', 'comments']).exec())
+
+            if (listsError) {
+                res.status(404).render('not-found')
+                return
+            }
+            res.render('list/collection', { lists: lists, filtered_by : req.query.filter, searched_name: undefined, user: req.user })
+        }
+
+    } else if (req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi')
         const [lists, listsError] = await handle(List.find({ author: req.user._id, name: regex, deleted: false }).sort({ 'name' : 'asc' }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'games', populate: { path: 'image' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
 
@@ -23,7 +77,7 @@ router.get('/', isLoggedIn, async (req, res) => {
             req.flash('error', 'No list name matched, please try again!')
             res.redirect('back')
         } else {
-            res.render('list/collection', { lists: lists, searched_name: req.query.search, user: req.user })
+            res.render('list/collection', { lists: lists, filtered_by : req.query.filter, searched_name: req.query.search, user: req.user })
         }
 
     } else {
@@ -44,7 +98,7 @@ router.get('/', isLoggedIn, async (req, res) => {
             return res.status(400).render('bad-request', { user: req.user })
         }
 
-        res.render('list/collection', { lists: lists, searched_name: undefined, user: req.user })
+        res.render('list/collection', { lists: lists, filtered_by : req.query.filter, searched_name: undefined, user: req.user })
     }
 })
 
@@ -157,7 +211,7 @@ router.post('/:id', isLoggedIn, async (req, res) => {
                 return
             }  
 
-            res.render('home/home', { lists: listsPopulated, filtered_by : req.body.filter, searched_name: req.query.search, user: req.user })
+            res.render('list/collection', { lists: listsPopulated, filtered_by : req.body.filter, searched_name: req.query.search, user: req.user })
 
         } else {
             res.redirect('/')
