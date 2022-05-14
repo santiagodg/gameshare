@@ -36,7 +36,7 @@ a, .pink-text {
 }
 
 a:hover {
-    color: rgb(174, 134, 191);
+    color: var(--secondary);
     text-decoration: none;
 }
 
@@ -70,7 +70,7 @@ body {
 }
 
 .nav-link:hover {
-    color: rgb(174, 134, 191);
+    color: var(--secondary);
 }
 
 .btn-outline-primary {

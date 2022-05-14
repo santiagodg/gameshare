@@ -88,9 +88,11 @@
     <div class="row no-gutters">
         <% games.forEach(game => { %>
             <div class="col-3 px-1 my-3 align-self-center">
-                <a href="/games/<%= game._id %>" title="<%= game.name%>">
-                    <img class="game-card w-100 rounded single-img" src="<%= game.image %>">
-                </a>
+                <div class="">
+                    <a href="/games/<%= game._id %>" title="<%= game.name%>">
+                        <img class="game-card w-100 rounded single-img" src="<%= game.image %>">
+                    </a>
+                </div>
                 <p class="text-center my-2" style="font-size: 0.75rem">
                     <% if(game.isVideogame){ %>
                         <span>Video game</span>
