@@ -117,12 +117,13 @@ router.post('/', isLoggedIn, async (req, res) => {
     const [exists, existsError] = await handle(List.findOne({ author: req.user._id, name: req.body.name }))
     if (existsError) {
         console.log(`Error in POST /list: List already exists: ${existsError}}`)
+        req.flash('error', 'A list with that name already exists.')
         return res.status(500).render('server-error', { user: req.user })
     }
 
     if (exists !== null) {
         console.log("Error: A list with that name already exists.")
-        req.flash('A list with that name already exists.')
+        req.flash('error', 'A list with that name already exists.')
         return res.redirect('back')
     }
 
@@ -144,7 +145,7 @@ router.post('/', isLoggedIn, async (req, res) => {
         return res.status(400).render('bad-request', { user: req.user })
     }
 
-    req.flash('List added successfully.')
+    req.flash('success', 'List added successfully.');
     res.redirect('/list')
     // res,redirect('/')
 })
@@ -267,6 +268,7 @@ router.put('/:id', isLoggedIn, async (req, res) => {
         return
     }
 
+    req.flash('success', 'List updated successfully.');
     res.redirect(`/list/${req.params.id}`)
 })
 

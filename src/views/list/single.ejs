@@ -29,6 +29,12 @@
             </div>
             <h1 class="h2 mb-0 mx-2"><%= list.name %></h1>
             <p class="mx-2" style="font-size: 18px;"><%= list.description %></p>
+            <% if(list.games.length < 1){ %>
+                <div class="ml-2 pt-3 text-center">
+                    <h3 class="mt-3">Your list is empty.</h3>
+                    <p class="mb-3" style="font-size: 18px;">Add games by using the Edit button or clicking <a href="/list/<%= list._id %>/edit">here</a>.</p>
+                </div>
+            <% } %>
             <div class="row no-gutters">
                 <% list.games.forEach(game => { %>
                     <div class="col-3 px-1 my-2 align-self-center">
@@ -39,7 +45,7 @@
                 <% }) %>
             </div>
             <div class="mt-5 mb-4">
-                <p class="h5 text-uppercase mb-0 pb-0 px-2">Comments</p>
+                <p class="h3 mb-0 pb-0 px-2">Comments</p>
                 <div class="dropdown-divider"></div>
                 <div class="row">
                     <div class="col">

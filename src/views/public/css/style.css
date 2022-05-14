@@ -36,7 +36,7 @@ a, .pink-text {
 }
 
 a:hover {
-    color: rgb(174, 134, 191);
+    color: var(--secondary);
     text-decoration: none;
 }
 
@@ -60,8 +60,17 @@ body {
     font-size: 18px;
 }
 
+.nav-signed {
+    color: var(--primary);
+    font-weight: normal;
+    font-size: 16px;
+    display: block;
+    padding: .7rem 4px;
+    text-align: right;
+}
+
 .nav-link:hover {
-    color: rgb(174, 134, 191);
+    color: var(--secondary);
 }
 
 .btn-outline-primary {
@@ -193,6 +202,13 @@ input[type="email"], input[type="text"], input[type="password"], input[type="use
     opacity: 0.7;
 }
 
+.list-empty {
+    margin-bottom: .5rem;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.2;
+}
+
 .flex-container {
     display: flex;
 }
@@ -219,4 +235,53 @@ input[type="email"], input[type="text"], input[type="password"], input[type="use
 
 .game-card:hover {
     opacity: 0.6;
+}
+
+.filter {
+    min-width: 175px;
+}
+
+.vr {
+    background-color: var(--font-color-medium);;
+    height: 40px;
+    width: 1px;
+}
+
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+    
+.rating > input{
+    display:none;
+}
+    
+.rating > label {
+    position: relative;
+    /* width: 1.1em;
+    font-size: 15vw; */
+    width: 1.1em;
+    font-size: 25px;
+    color: var(--primary);
+    cursor: pointer;
+}
+    
+.rating > label::before{
+    content: "\2605";
+    position: absolute;
+    opacity: 0;
+}
+    
+.rating > label:hover:before,
+.rating > label:hover ~ label:before {
+    opacity: 1 !important;
+}
+    
+.rating > input:checked ~ label:before {
+    opacity: 1;
+}
+    
+.rating:hover > input:checked ~ label:before { 
+    opacity: 0.4;
 }

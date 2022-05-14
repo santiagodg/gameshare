@@ -1,100 +1,147 @@
 <%- include (".././partials/header") %>
 <%- include (".././partials/navbar") %>
-<div class="container py-5 h-100 main">
-  <ul>
-    <strong>Lists</strong>
-    <% if (searched_name){ %>
-      <div class="d-flex mb-4">
-          <form action="/" action="GET" class="form-inline">
-              <div class="form-group">
-                  <input type="text" name="search" value="<%= searched_name %>" class="form-control searchbar" required>
-                  <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
-              </div>	
-          </form>
-          <button onclick="location.href = '/';" class="btn1 btn-default searchbtn red ml-1">Clear</button>
-      </div>
-  <% }else{ %>
-      <div class="d-flex">
-          <form action="/" action="GET" class="form-inline">
-              <div class="form-group">
-                  <input type="text" name="search" placeholder="Search List Name ..." class="form-control searchbar" required>
-                  <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
-              </div>	
-          </form>
-      </div>
-  <% } %>
-
-  <% if (filtered_by){ %>
-    <label class="text-white">Filter by</label>
-    <form action="/" action="GET" class="form-inline">
-      <div class="form-group">
-        <select name="filter" class="custom-select">
-          <% if (filtered_by == 'alphabet') { %>
-            <option selected value="alphabet">Alphabet</option>
-            <option value="likes">Likes</option>
-            <option value="newest">Newest</option>
-          <% }else if (filtered_by == 'likes') { %>
-            <option value="alphabet">Alphabet</option>
-            <option selected value="likes">Likes</option>
-            <option value="newest">Newest</option>
-          <% } else { %>
-            <option value="alphabet">Alphabet</option>
-            <option value="likes">Likes</option>
-            <option selected value="newest">Newest</option>
-          <% } %>
-        </select>
-        <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
-        <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
-      </div>
-    </form>
-  <% } else{ %>
-    <label class="text-white">Filter by</label>
-    <form action="/" action="GET" class="form-inline">
-      <div class="form-group">
-        <select name="filter" class="custom-select">
-          <option selected value="alphabet">Alphabet</option>
-          <option value="likes">Likes</option>
-          <option value="newest">Newest</option>
-        </select>
-        <!-- <input type="text" name="filter" placeholder="Select filter ..." class="form-control searchbar" required> -->
-        <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
-      </div>
-    </form>
-  <% } %>
-  </div>
-    <ul>
-      <% if (current_user && lists && lists.length > 0) { %>
-        <% lists.forEach(list => { %>
-          <li> <a href="/list/<%= list._id %>"><%= list.name %></a> by <%= list.author.username %>
-          <% if (!list.author.equals(current_user)) { %>
-            <form action ='/list/<%= list._id %>' method="POST">
-              <% if (filtered_by && filtered_by == 'likes') { %>
-                <input type="hidden" name="filter" value="likes">
-              <% } %>
-              <% var liked = false %>
-              <% var likedId = "" %>
-              <% list.likes.forEach(like => { %>
-                <% if (like.author.equals(current_user._id)) { %>
-                  <% liked = true %>
-                  <% likedId = like._id %>
-                  <% return %>
+<div class="container py-5 px-5 h-100 main">
+  <div class="row">
+    <div class="col">
+      <form action="/list/new" class="inline">
+        <button class="btn btn-outline-primary float-right submit-button" >Create New List</button>
+      </form>
+      <h1 class="mb-4">All Lists</h1>
+      <div class="flex-container mb-4">
+        <% if (filtered_by){ %>
+          <div class="d-flex">
+            <label class="pt-2 mr-2">Filter by: </label>
+            <form action="/" action="GET" class="form-inline">
+            <div class="form-group filter">
+                <select name="filter" class="custom-select">
+                  <% if (filtered_by == 'alphabet') { %>
+                    <option selected value="alphabet">Alphabet</option>
+                    <option value="likes">Likes</option>
+                    <option value="newest">Newest</option>
+                  <% }else if (filtered_by == 'likes') { %>
+                    <option value="alphabet">Alphabet</option>
+                    <option selected value="likes">Likes</option>
+                    <option value="newest">Newest</option>
+                  <% } else { %>
+                    <option value="alphabet">Alphabet</option>
+                    <option value="likes">Likes</option>
+                    <option selected value="newest">Newest</option>
                 <% } %>
-              <% }) %>
-              <% if (liked) { %>
-                <button type="submit" name="like" value="<%= likedId %>">Dislike</button>
-              <% } else { %>
-                <button type="submit" name="like" value="addNew">Like</button>
+                </select>
+                <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
+                <input type="submit" value="Filter" class="btn btn-outline-primary">
+              </div>
+            </form>
+          </div>
+        <% } else{ %>
+          <div class="d-flex">
+            <label class="pt-2 mr-2">Filter by:</label>
+            <form action="/" action="GET" class="form-inline">
+              <div class="form-group">
+                <select name="filter" class="custom-select filter">
+                  <option selected value="alphabet">Alphabet</option>
+                  <option value="likes">Likes</option>
+                  <option value="newest">Newest</option>
+                </select>
+                <!-- <input type="text" name="filter" placeholder="Select filter ..." class="form-control searchbar" required> -->
+                <input type="submit" value="Filter" class="btn btn-outline-primary">
+              </div>
+            </form>
+          </div>
+        <% } %>
+        <div class="ml-2">
+          <% if (searched_name){ %>
+            <div class="d-flex">
+              <div class="vr ml-4 mr-4"></div>
+              <label class="pt-2 mr-2">Search by: </label>
+              <form action="/" action="GET" class="form-inline">
+                <div class="form-group">
+                  <input type="text" name="search" value="<%= searched_name %>" class="form-control searchbar" required>
+                  <input type="submit" value="Search" class="btn btn-outline-primary searchbtn ml-1">
+                </div>	
+              </form>
+              <button onclick="location.href = '/';" class="btn btn-primary searchbtn ml-1">Clear</button>
+            </div>
+          <% }else{ %>
+            <div class="d-flex">
+              <div class="vr ml-4 mr-4"></div>
+              <label class="pt-2 mr-2">Search by: </label>
+              <form action="/" action="GET" class="form-inline">
+                <div class="form-group">
+                  <input type="text" name="search" placeholder="Search list name ..." class="form-control searchbar" required>
+                  <input type="submit" value="Search" class="btn btn-outline-primary searchbtn ml-1">
+                </div>	
+              </form>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      <p>Check out what other people are creating and find new lists that may interest you!</p>
+      <div>
+        <% if (current_user && lists && lists.length > 0) { %>
+          <% lists.forEach(list => { %>
+            <div class="list-card my-4 py-4 pl-4">
+              <div class="flex-container">
+                <h5 class="flex-child"><a href="/list/<%= list._id %>"><%= list.name %></a></h5> 
+                <div class="flex-child mr-4 text-right">
+                  <span><%= list.likes.length %> Likes </span>
+                  <span class="pink-text">• </span>
+                  <span><%= list.comments.length %> Comments </span>
+                  <span class="pink-text">• </span>
+                  <span>Created on <span><%= list.createdAt.toDateString() %></span>
+                </div>
+              </div>
+              <p class="">List created by <span class="pink-text"><%=list.author.username %></span></p>
+              <div class="p-0 mb-3 mt-0">
+                <% let i = 0 %>
+                <% for (; i < 6 && i < list.games.length; i = i + 1) { %>
+                    <a href="/games/<%= list.games[i]._id %>" title="<%= list.games[i].name%>">
+                        <img class="game-card list-img rounded p-0 m-0 edges" src="<%= list.games[i].image %>">
+                    </a>
+                <% } %>
+                <% if (list.games.length > 6) { %>
+                    <span class="h5 pl-2 font-weight-boldl"><a style="color: rgba(255, 255, 255, 0.60)" href="/list/<%= list._id %>">+<%= list.games.length - i %></a></span>
+                <% } %>
+              </div>
+              <% if (list.description && list.description != "") { %>
+                  <div><%= list.description %></div>
               <% } %>
-          </form>
-          <% } %>  
-          <p><%= list.likes.length %> Likes</p>
-          </li>
-      <% }) %>
-      <% } %>
-      </ul>
-  </ul>
-  <form action="/list/new" class="inline">
-    <button class="float-left submit-button" >Create New List</button>
-  </form>
+              <div>
+                <% if (!list.author.equals(current_user)) { %>
+                  <form action ='/list/<%= list._id %>' method="POST">
+                    <% if (filtered_by && filtered_by == 'likes') { %>
+                      <input type="hidden" name="filter" value="likes">
+                    <% } %>
+                    <% var liked = false %>
+                    <% var likedId = "" %>
+                    <% list.likes.forEach(like => { %>
+                      <% if (like.author.equals(current_user._id)) { %>
+                        <% liked = true %>
+                        <% likedId = like._id %>
+                        <% return %>
+                      <% } %>
+                    <% }) %>
+                    <div class="text-right mr-4">
+                      <% if (liked) { %>
+                        <button class="btn btn-primary" type="submit" name="like" value="<%= likedId %>">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-down-fill" viewBox="0 0 18 18">
+                            <path d="M6.956 14.534c.065.936.952 1.659 1.908 1.42l.261-.065a1.378 1.378 0 0 0 1.012-.965c.22-.816.533-2.512.062-4.51.136.02.285.037.443.051.713.065 1.669.071 2.516-.211.518-.173.994-.68 1.2-1.272a1.896 1.896 0 0 0-.234-1.734c.058-.118.103-.242.138-.362.077-.27.113-.568.113-.856 0-.29-.036-.586-.113-.857a2.094 2.094 0 0 0-.16-.403c.169-.387.107-.82-.003-1.149a3.162 3.162 0 0 0-.488-.9c.054-.153.076-.313.076-.465a1.86 1.86 0 0 0-.253-.912C13.1.757 12.437.28 11.5.28H8c-.605 0-1.07.08-1.466.217a4.823 4.823 0 0 0-.97.485l-.048.029c-.504.308-.999.61-2.068.723C2.682 1.815 2 2.434 2 3.279v4c0 .851.685 1.433 1.357 1.616.849.232 1.574.787 2.132 1.41.56.626.914 1.28 1.039 1.638.199.575.356 1.54.428 2.591z"/>
+                          </svg> Dislike</button>
+                      <% } else { %>
+                        <button class="btn btn-primary" type="submit" name="like" value="addNew">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up-fill" viewBox="0 0 18 18">
+                            <path d="M6.956 1.745C7.021.81 7.908.087 8.864.325l.261.066c.463.116.874.456 1.012.965.22.816.533 2.511.062 4.51a9.84 9.84 0 0 1 .443-.051c.713-.065 1.669-.072 2.516.21.518.173.994.681 1.2 1.273.184.532.16 1.162-.234 1.733.058.119.103.242.138.363.077.27.113.567.113.856 0 .289-.036.586-.113.856-.039.135-.09.273-.16.404.169.387.107.819-.003 1.148a3.163 3.163 0 0 1-.488.901c.054.152.076.312.076.465 0 .305-.089.625-.253.912C13.1 15.522 12.437 16 11.5 16H8c-.605 0-1.07-.081-1.466-.218a4.82 4.82 0 0 1-.97-.484l-.048-.03c-.504-.307-.999-.609-2.068-.722C2.682 14.464 2 13.846 2 13V9c0-.85.685-1.432 1.357-1.615.849-.232 1.574-.787 2.132-1.41.56-.627.914-1.28 1.039-1.639.199-.575.356-1.539.428-2.59z"/>
+                          </svg> Like</button>
+                      <% } %>
+                    </div>
+                  </form>
+                <% } %>  
+              </div>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </div>
 </div>
 <%- include (".././partials/footer") %>
