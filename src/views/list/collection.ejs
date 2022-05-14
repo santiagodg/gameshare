@@ -13,25 +13,25 @@
                         <div class="d-flex">
                             <label class="pt-2 mr-2">Filter by: </label>
                             <form action="/list" action="GET" class="form-inline">
-                            <div class="form-group filter">
-                                <select name="filter" class="custom-select filter">
-                                <% if (filtered_by == 'alphabet') { %>
-                                    <option selected value="alphabet">Alphabet</option>
-                                    <option value="likes">Likes</option>
-                                    <option value="newest">Newest</option>
-                                <% }else if (filtered_by == 'likes') { %>
-                                    <option value="alphabet">Alphabet</option>
-                                    <option selected value="likes">Likes</option>
-                                    <option value="newest">Newest</option>
-                                <% } else { %>
-                                    <option value="alphabet">Alphabet</option>
-                                    <option value="likes">Likes</option>
-                                    <option selected value="newest">Newest</option>
-                                <% } %>
-                                </select>
-                                <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
-                                <input type="submit" value="Filter" class="btn btn-outline-primary ml-1">
-                            </div>
+                                <div class="form-group filter">
+                                    <select name="filter" class="custom-select filter">
+                                    <% if (filtered_by == 'alphabet') { %>
+                                        <option selected value="alphabet">Alphabet</option>
+                                        <option value="likes">Likes</option>
+                                        <option value="newest">Newest</option>
+                                    <% }else if (filtered_by == 'likes') { %>
+                                        <option value="alphabet">Alphabet</option>
+                                        <option selected value="likes">Likes</option>
+                                        <option value="newest">Newest</option>
+                                    <% } else { %>
+                                        <option value="alphabet">Alphabet</option>
+                                        <option value="likes">Likes</option>
+                                        <option selected value="newest">Newest</option>
+                                    <% } %>
+                                    </select>
+                                    <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
+                                    <input type="submit" value="Filter" class="btn btn-outline-primary ml-1">
+                                </div>
                             </form>
                         </div>
                     <% } else{ %>

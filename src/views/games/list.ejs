@@ -1,83 +1,91 @@
 <%- include (".././partials/header") %>
 <%- include (".././partials/navbar") %>
 <link rel="stylesheet" href="/css/games/list.css">
-<div class="container py-5 px-5 h-100 main">
-    <div class="row no-gutters">
-        <div class="col-12">
-            <h1>Games</h1>
-            <div class="dropdown-divider"></div>
-        </div>
-        <% if (searched_title){ %>
-            <div class="col-10">
-                <form action="/games" action="GET" class="form-block">
-                    <div class="form-group">
-                        <input type="text" name="search" value="<%= searched_title %>" class="form-control searchbar" required>
-                        <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
-                    </div>	
-                </form>
-                <button onclick="location.href = '/games';" class="btn1 btn-default searchbtn red ml-1">Clear</button>
-            </div>
-        <% }else{ %>
-            <div class="col-10">
-                <form action="/games" action="GET" class="form-block">
-                    <div class="form-group">
-                        <input type="text" name="search" placeholder="Search Game Name ..." class="form-control searchbar" required>
-                        <input type="submit" value="Search" class="btn1 btn-default searchbtn ml-1">
-                    </div>	
-                </form>
-            </div>
-        <% } %>
-        <br>
-        <% if (filtered_by){ %>
-            <div class="col-10">
-                <label class="text-white">Filter by</label>
-                <form action="/games" action="GET" class="form-inline">
-                <div class="form-group">
-                    <select name="filter" class="custom-select">
-                    <% if (filtered_by == 'alphabet') { %>
-                        <option selected value="alphabet">Alphabet</option>
-                        <option value="ratings">Ratings</option>
-                        <option value="videogame">Video game</option>
-                        <option value="boardgame">Board game</option>
-                    <% }else if (filtered_by == 'ratings') { %>
-                        <option value="alphabet">Alphabet</option>
-                        <option selected value="ratings">Ratings</option>
-                        <option value="videogame">Video game</option>
-                        <option value="boardgame">Board game</option>
-                    <% } else if (filtered_by == 'videogame'){ %>
-                        <option value="alphabet">Alphabet</option>
-                        <option value="ratings">Ratings</option>
-                        <option selected value="videogame">Video game</option>
-                        <option value="boardgame">Board game</option>
-                    <% } else { %>
-                        <option value="alphabet">Alphabet</option>
-                        <option value="ratings">Ratings</option>
-                        <option value="videogame">Video game</option>
-                        <option selected value="boardgame">Board game</option>
+<div class="container pt-5 px-5 h-100 main">
+    <div class="row">
+        <div class="col 12">
+            <h1 class="mb-4">Games</h1>
+            <div class="flex-container mb-4">
+                <% if (filtered_by){ %>
+                    <div class="d-flex">
+                        <label class="pt-2 mr-2">Filter by: </label>
+                        <form action="/games" action="GET" class="form-inline">
+                            <div class="form-group">
+                                <select name="filter" class="custom-select filter">
+                                <% if (filtered_by == 'alphabet') { %>
+                                    <option selected value="alphabet">Alphabet</option>
+                                    <option value="ratings">Ratings</option>
+                                    <option value="videogame">Video game</option>
+                                    <option value="boardgame">Board game</option>
+                                <% }else if (filtered_by == 'ratings') { %>
+                                    <option value="alphabet">Alphabet</option>
+                                    <option selected value="ratings">Ratings</option>
+                                    <option value="videogame">Video game</option>
+                                    <option value="boardgame">Board game</option>
+                                <% } else if (filtered_by == 'videogame'){ %>
+                                    <option value="alphabet">Alphabet</option>
+                                    <option value="ratings">Ratings</option>
+                                    <option selected value="videogame">Video game</option>
+                                    <option value="boardgame">Board game</option>
+                                <% } else { %>
+                                    <option value="alphabet">Alphabet</option>
+                                    <option value="ratings">Ratings</option>
+                                    <option value="videogame">Video game</option>
+                                    <option selected value="boardgame">Board game</option>
+                                <% } %>
+                                </select>
+                            <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
+                                <input type="submit" value="Filter" class="btn btn-outline-primary ml-1">
+                            </div>
+                        </form>
+                    </div>
+                <% } else{ %>
+                    <div class="d-flex">
+                        <label class="pt-2 mr-2">Filter by: </label>
+                        <form action="/games" action="GET" class="form-inline">
+                            <div class="form-group">
+                                <select name="filter" class="custom-select filter">
+                                    <option selected value="alphabet">Alphabet</option>
+                                    <option value="ratings">Ratings</option>
+                                    <option value="videogame">Video game</option>
+                                    <option value="boardgame">Board game</option>
+                                </select>
+                                <!-- <input type="text" name="filter" placeholder="Select filter ..." class="form-control searchbar" required> -->
+                                <input type="submit" value="Filter" class="btn btn-outline-primary ml-1">
+                            </div>
+                        </form>
+                    </div>
+                <% } %>
+                <div class="ml-2">
+                    <% if (searched_title){ %>
+                        <div class="d-flex">
+                            <div class="vr ml-4 mr-4"></div>
+                            <label class="pt-2 mr-2">Search by: </label>
+                            <form action="/games" action="GET" class="form-inline">
+                                <div class="form-group">
+                                    <input type="text" name="search" value="<%= searched_title %>" class="form-control searchbar" required>
+                                    <input type="submit" value="Search" class="btn btn-outline-primary searchbtn ml-1">
+                                </div>	
+                            </form>
+                            <button onclick="location.href = '/games';" class="btn btn-primary searchbtn red ml-1">Clear</button>
+                        </div>
+                    <% }else{ %>
+                        <div class="d-flex">
+                            <div class="vr ml-4 mr-4"></div>
+                            <label class="pt-2 mr-2">Search by: </label>
+                            <form action="/games" action="GET" class="form-inline">
+                                <div class="form-group">
+                                    <input type="text" name="search" placeholder="Search Game Name..." class="form-control searchbar" required>
+                                    <input type="submit" value="Search" class="btn btn-outline-primary searchbtn ml-1">
+                                </div>	
+                            </form>
+                        </div>
                     <% } %>
-                    </select>
-                <!-- <input type="text" name="filter" value="<%= filtered_by %>" class="form-control searchbar" required> -->
-                    <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
                 </div>
-                </form>
             </div>
-          <% } else{ %>
-            <div class="col-10">
-                <label class="text-white">Filter by</label>
-                <form action="/games" action="GET" class="form-inline">
-                <div class="form-group">
-                    <select name="filter" class="custom-select">
-                        <option selected value="alphabet">Alphabet</option>
-                        <option value="ratings">Ratings</option>
-                        <option value="videogame">Video game</option>
-                        <option value="boardgame">Board game</option>
-                    </select>
-                    <!-- <input type="text" name="filter" placeholder="Select filter ..." class="form-control searchbar" required> -->
-                    <input type="submit" value="Filter" class="btn btn-outline-primary text-uppercase font-weight-bold">
-                </div>
-                </form>
-            </div>
-          <% } %>
+        </div>
+    </div>
+    <div class="row no-gutters">
         <% games.forEach(game => { %>
             <div class="col-3 px-1 my-3 align-self-center">
                 <a href="/games/<%= game._id %>" title="<%= game.name%>">
@@ -85,9 +93,9 @@
                 </a>
                 <p class="text-center my-2" style="font-size: 0.75rem">
                     <% if(game.isVideogame){ %>
-                        <span>Video Game</span>
+                        <span>Video game</span>
                     <% } else{ %>  
-                        <span>Board Game</span>
+                        <span>Board game</span>
                     <% } %>
                     <span><span class="pink-text">&nbsp;&nbsp;&#9829;&nbsp;</span><%= game.reviews.length %> Reviews</span>
                     <% if(game.avgRating > 0){ %>
