@@ -6,6 +6,7 @@ const { handle, escapeRegex } = require('./util/util')
 const Game = require('../models/game')
 const List = require('../models/list')
 const Like = require('../models/like')
+const Comment = require('../models/comment')
 const CommentController = require('./comment')
 
 var router = express.Router()
@@ -13,14 +14,14 @@ var router = express.Router()
 router.get('/', isLoggedIn, async (req, res) => {
     if (req.query.filter) {
         if (req.query.filter == "alphabet") {
-            const [lists, listsError] = await handle(List.find({ author: req.user._id, deleted: false }).sort({ 'name' : 'asc' }).populate(['likes', 'games', 'comments']).exec())
+            const [lists, listsError] = await handle(List.find({ author: req.user._id, deleted: false }).sort({ 'name': 'asc' }).populate(['likes', 'games', 'comments']).exec())
 
             if (listsError) {
                 res.status(404).render('not-found')
                 return
             }
 
-            res.render('list/collection', { lists: lists, filtered_by : req.query.filter, searched_name: undefined, user: req.user })
+            res.render('list/collection', { lists: lists, filtered_by: req.query.filter, searched_name: undefined, user: req.user })
 
         } else if (req.query.filter == "likes") {
             const [lists, listsError] = await handle(List.aggregate([
@@ -28,15 +29,15 @@ router.get('/', isLoggedIn, async (req, res) => {
                     $project: {
                         "name": 1,
                         "description": 1,
-                        "likes" : 1,
-                        "amountLikes": { "$size" : "$likes" },
+                        "likes": 1,
+                        "amountLikes": { "$size": "$likes" },
                         "comments": 1,
                         "games": 1,
                         "author": 1,
                         "deleted": 1,
                         "createdAt": 1
                     }
-                }, { "$match" : { author: { "$eq": req.user._id } } }, { "$match" : { deleted: { "$eq": false } } }, { "$sort": { "amountLikes" : -1 } }
+                }, { "$match": { author: { "$eq": req.user._id } } }, { "$match": { deleted: { "$eq": false } } }, { "$sort": { "amountLikes": -1 } }
             ]))
 
             // { "$match" : { author: { "$eq": req.user._id } } }
@@ -44,40 +45,40 @@ router.get('/', isLoggedIn, async (req, res) => {
             if (listsError) {
                 res.status(404).render('not-found')
                 return
-            }        
+            }
 
             const [listsPopulated, populatedError] = await handle(List.populate(lists, ['author', 'likes', 'games']))
 
             if (populatedError) {
                 res.status(404).render('not-found')
                 return
-            }  
+            }
 
-            res.render('list/collection', { lists: listsPopulated, filtered_by : req.query.filter, searched_name: undefined, user: req.user })
+            res.render('list/collection', { lists: listsPopulated, filtered_by: req.query.filter, searched_name: undefined, user: req.user })
 
-        }else {
-            const [lists, listsError] = await handle(List.find({ author: req.user._id, deleted: false }).sort({ 'createdAt' : 'desc' }).populate(['author', 'likes', 'games', 'comments']).exec())
+        } else {
+            const [lists, listsError] = await handle(List.find({ author: req.user._id, deleted: false }).sort({ 'createdAt': 'desc' }).populate(['author', 'likes', 'games', 'comments']).exec())
 
             if (listsError) {
                 res.status(404).render('not-found')
                 return
             }
-            res.render('list/collection', { lists: lists, filtered_by : req.query.filter, searched_name: undefined, user: req.user })
+            res.render('list/collection', { lists: lists, filtered_by: req.query.filter, searched_name: undefined, user: req.user })
         }
 
     } else if (req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi')
-        const [lists, listsError] = await handle(List.find({ author: req.user._id, name: regex, deleted: false }).sort({ 'name' : 'asc' }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'games', populate: { path: 'image' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
+        const [lists, listsError] = await handle(List.find({ author: req.user._id, name: regex, deleted: false }).sort({ 'name': 'asc' }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'games', populate: { path: 'image' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
 
         if (listsError) {
-             res.status(404).render('not-found')
+            res.status(404).render('not-found')
             return
         }
         if (lists.length < 1) {
             req.flash('error', 'No list name matched, please try again!')
             res.redirect('back')
         } else {
-            res.render('list/collection', { lists: lists, filtered_by : req.query.filter, searched_name: req.query.search, user: req.user })
+            res.render('list/collection', { lists: lists, filtered_by: req.query.filter, searched_name: req.query.search, user: req.user })
         }
 
     } else {
@@ -98,7 +99,7 @@ router.get('/', isLoggedIn, async (req, res) => {
             return res.status(400).render('bad-request', { user: req.user })
         }
 
-        res.render('list/collection', { lists: lists, filtered_by : req.query.filter, searched_name: undefined, user: req.user })
+        res.render('list/collection', { lists: lists, filtered_by: req.query.filter, searched_name: undefined, user: req.user })
     }
 })
 
@@ -190,29 +191,29 @@ router.post('/:id', isLoggedIn, async (req, res) => {
                     $project: {
                         "name": 1,
                         "description": 1,
-                        "likes" : 1,
-                        "amountLikes": { "$size" : "$likes" },
+                        "likes": 1,
+                        "amountLikes": { "$size": "$likes" },
                         "comments": 1,
                         "author": 1,
                         "deleted": 1,
                         "createdAt": 1
                     }
-                }, { "$sort": { "amountLikes" : -1 } }
+                }, { "$sort": { "amountLikes": -1 } }
             ]))
 
             if (listsError) {
                 res.status(404).render('not-found')
                 return
-            }        
+            }
 
             const [listsPopulated, populatedError] = await handle(List.populate(lists, ['author', 'likes', 'games']))
 
             if (populatedError) {
                 res.status(404).render('not-found')
                 return
-            }  
+            }
 
-            res.render('list/collection', { lists: listsPopulated, filtered_by : req.body.filter, searched_name: req.query.search, user: req.user })
+            res.render('list/collection', { lists: listsPopulated, filtered_by: req.body.filter, searched_name: req.query.search, user: req.user })
 
         } else {
             res.redirect('/')
@@ -270,7 +271,7 @@ router.put('/:id', isLoggedIn, async (req, res) => {
         req.flash('error', 'A list with that name already exists.')
         return res.redirect('back')
     }
-    
+
     foundList.description = req.body.description
     foundList.games = req.body.games
 
@@ -286,33 +287,72 @@ router.put('/:id', isLoggedIn, async (req, res) => {
     res.redirect(`/list/${req.params.id}`)
 })
 
-// Soft delete list
-router.post('/:id/toggle-softdelete', isLoggedIn, async (req, res) => {
-    const [foundList, foundListError] = await handle(List.findOne({ _id: req.params.id }))
+// Delete list
+router.delete('/:id', isLoggedIn, async (req, res) => {
+    const [foundList, foundListError] = await handle(
+        List.findById(req.params.id)
+            .populate('author')
+            .exec()
+    )
 
     if (foundListError) {
-        console.error(`error in POST /list/${req.params.id}/toggle-softdelete: failed to find list ${req.params.id}: ${foundListError}`)
+        console.error(`error in DELETE /list/${req.params.id}: failed to find list ${req.params.id}: ${JSON.stringify(foundListError, null, 2)}`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }
 
-    if (!req.user.isAdmin && !req.user._id.equals(foundList.author._id)) {
-        console.error(`error in POST /list/${req.params.id}/toggle-softdelete: User ${req.user._id} must be admin or author of list.`)
-        res.status(403).render('bad-request', { user: req.user })
-        return
-    }
+    // console.debug(`DEBUG: DELETE /list/${req.params.id}: foundList: ${JSON.stringify(foundList, null, 2)}`)
 
-    foundList.deleted = !foundList.deleted
-
-    const [savedList, savedListError] = await handle(foundList.save())
-
-    if (savedListError) {
-        console.error(`error in POST /list/${req.params.id}/toggle-softdelete: failed to save list ${savedList._id} after updating: ${savedListError}`)
+    if (!req.user._id.equals(foundList.author._id) && !req.user.isAdmin) {
+        console.error(`error in DELETE /list/${req.params.id}: must be list author or admin to delete.`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }
 
-    res.redirect('/list')
+    const [deleteLikesResult, deleteLikesError] = await handle(
+        Like.deleteMany({
+            _id: {
+                $in: foundList.likes,
+            },
+        }).exec()
+    )
+
+    if (deleteLikesError) {
+        console.error(`error in DELETE /list/${req.params.id}: failed to delete likes of list ${req.params.id}: ${deleteLikesError}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    // console.debug(`DEBUG: DELETE /list/${req.params.id}: deleteLikesResult: ${JSON.stringify(deleteLikesResult, null, 2)}`)
+
+    const [deleteCommentsResult, deleteCommentsError] = await handle(Comment.deleteMany({
+        _id: {
+            $in: foundList.comments,
+        },
+    }).exec())
+
+    if (deleteCommentsError) {
+        console.error(`error in DELETE /list/${req.params.id}: failed to delete comments of list ${req.params.id}: ${deleteCommentsError}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    // console.debug(`DEBUG: DELETE /list/${req.params.id}: deleteCommentsResult: ${JSON.stringify(deleteCommentsResult, null, 2)}`)
+
+    const [deleteListResult, deleteListError] = await handle(List.deleteOne({ _id: req.params.id }).exec())
+    if (deleteListError) {
+        console.error(`error in DELETE /list/${req.params.id}: failed to delete list ${req.params.id}: ${JSON.stringify(deleteListError, null, 2)}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    } else if (deleteListResult.deletedCount !== 1) {
+        console.error(`error in DELETE /list/${req.params.id}: failed to delete list ${req.params.id}: deleteOne query result: ${JSON.stringify(deleteListResult, null, 2)}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
+    }
+
+    // console.debug(`DEBUG: DELETE /list/${req.params.id}: deleteListResult: ${JSON.stringify(deleteListResult, null, 2)}`)
+
+    res.redirect(`/list`)
 })
 
 // Adding comment routes
