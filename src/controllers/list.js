@@ -153,7 +153,6 @@ router.post('/', isLoggedIn, async (req, res) => {
 
 // Show all attributes of a list in a single page
 router.get('/:id', isLoggedIn, async (req, res) => {
-    // Because we need the author information for the comments, we use a separate populate to fill the data of the nested attribute of author
     const [list, listError] = await handle(
         List.findOne({
             _id: req.params.id,
@@ -179,8 +178,6 @@ router.get('/:id', isLoggedIn, async (req, res) => {
         res.status(400).render('bad-request', { user: req.user })
         return
     }
-
-    // console.debug(`DEBUG: GET /list/${req.params.id}: comments: ${JSON.stringify(list.comments, null, 2)}`)
 
     res.render('list/single', {
         list,
