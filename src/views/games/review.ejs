@@ -11,11 +11,11 @@
                     <div class="row">
                         <div class="col">
                             <h1 class="d-inline-block"><%= game.name %></h1>
-                            <form id="review-form" action="/games/<%= game._id %>/review" method="POST"></form>
+                            <form id="review-form" action="/games/<%= game._id %>/review?_method=PUT" method="POST"></form>
                                 <input form="review-form" id="rating-author" type="hidden" name="author" value="<%= user._id %>">
                                 <div class="form-group">
                                     <label class="h5 mt-1" for="review-text">Review</label>
-                                    <textarea form="review-form" id="review-text" class="form-control" name="text" placeholder="Write your review here..." rows="5" required></textarea>
+                                    <textarea form="review-form" id="review-text" class="form-control" name="text" placeholder="Write your review here..." rows="5" required><%= userReview === undefined ? "" : userReview.text %></textarea>
                                 </div>
                                 <div class="row my-2">
                                     <div class="col-auto ml-auto d-flex flex-column justify-content-end">

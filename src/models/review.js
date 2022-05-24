@@ -5,10 +5,6 @@ var reviewSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    rating: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Rating"
-    },
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
