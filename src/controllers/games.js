@@ -238,7 +238,7 @@ router.put('/:id/review', isLoggedIn, async (req, res) => {
     );
 
     if (foundGameError) {
-        console.error(`Error in POST /games/${req.params.id}/review: Failed finding game: ${JSON.stringify(foundGameError, null, 2)}`)
+        console.error(`Error in PUT /games/${req.params.id}/review: Failed finding game: ${JSON.stringify(foundGameError, null, 2)}`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }
@@ -254,7 +254,7 @@ router.put('/:id/review', isLoggedIn, async (req, res) => {
 
         const [savedReview, savedReviewError] = await handle(review.save())
         if (savedReviewError) {
-            console.error(`Error in POST /games/${req.params.id}/review: Failed to save new review: ${JSON.stringify(savedReviewError, null, 2)}`)
+            console.error(`Error in PUT /games/${req.params.id}/review: Failed to save new review: ${JSON.stringify(savedReviewError, null, 2)}`)
             res.status(400).render('bad-request', { user: req.user })
             return
         }
@@ -266,7 +266,7 @@ router.put('/:id/review', isLoggedIn, async (req, res) => {
         previouslyAuthoredReview.text = req.body.text
         const [savedReview, savedReviewError] = await handle(previouslyAuthoredReview.save())
         if (savedReviewError) {
-            console.error(`Error in POST /games/${req.params.id}/review: Failed to save updated previously authored review: ${JSON.stringify(savedReviewError, null, 2)}`)
+            console.error(`Error in PUT /games/${req.params.id}/review: Failed to save updated previously authored review: ${JSON.stringify(savedReviewError, null, 2)}`)
             res.status(400).render('bad-request', { user: req.user })
             return
         }
@@ -281,7 +281,7 @@ router.put('/:id/review', isLoggedIn, async (req, res) => {
     const [_savedGame, savedGameError] = await handle(foundGame.save())
 
     if (savedGameError) {
-        console.error(`Error in POST /games/${req.params.id}/review: Failed to save game ${foundGame._id}: ${JSON.stringify(savedGameError, null, 2)}`)
+        console.error(`Error in PUT /games/${req.params.id}/review: Failed to save game ${foundGame._id}: ${JSON.stringify(savedGameError, null, 2)}`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }
@@ -339,7 +339,7 @@ router.delete('/:id/review', isLoggedIn, async (req, res) => {
     // Delete review from database
     const [deleteResult, deleteError] = await handle(ReviewModel.deleteOne({ _id: req.body.reviewId }).exec());
     if (deleteError || deleteResult.deletedCount !== 1) {
-        console.error(`Error in POST /games/${req.params.id}/delete-review: Failed to delete review ${req.body.reviewId}: ${deleteError}`)
+        console.error(`Error in DELETE /games/${req.params.id}/review: Failed to delete review ${req.body.reviewId}: ${deleteError}`)
         res.status(400).render('bad-request', { user: req.user })
         return
     }
