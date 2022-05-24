@@ -82,9 +82,11 @@ router.get('/:id', isLoggedIn, async (req, res) => {
                 {
                     path: 'reviews',
                     populate: 'author',
-                    sort: {
-                        createdAt: 'desc',
-                    },
+                    options: {
+                        sort: {
+                            createdAt: -1,
+                        },
+                    }
                 },
                 {
                     path: 'ratings',
