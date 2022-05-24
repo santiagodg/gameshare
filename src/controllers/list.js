@@ -154,11 +154,38 @@ router.post('/', isLoggedIn, async (req, res) => {
 // Show all attributes of a list in a single page
 router.get('/:id', isLoggedIn, async (req, res) => {
     // Because we need the author information for the comments, we use a separate populate to fill the data of the nested attribute of author
-    const [list, listError] = await handle(List.findOne({ _id: req.params.id, deleted: false }).populate(['author', 'likes', 'games', 'comments']).populate({ path: 'comments', populate: { path: 'author' }, options: { sort: { 'createdAt': 'desc' } } }).exec())
+    const [list, listError] = await handle(
+        List.findOne({
+            _id: req.params.id,
+            deleted: false,
+        }).populate([
+            'author',
+            'likes',
+            'games',
+            {
+                path: 'comments',
+                populate: 'author',
+                options: {
+                    sort: {
+                        createdAt: -1,
+                    },
+                },
+            },
+        ]).exec()
+    )
+
     if (listError) {
-        return res.status(400).render('bad-request', { user: req.user })
+        console.error(`Error in GET /list/${req.params.id}: Failed to find list ${req.params.id}: ${JSON.stringify(listError, null, 2)}`)
+        res.status(400).render('bad-request', { user: req.user })
+        return
     }
-    res.render('list/single', { list: list, user: req.user })
+
+    // console.debug(`DEBUG: GET /list/${req.params.id}: comments: ${JSON.stringify(list.comments, null, 2)}`)
+
+    res.render('list/single', {
+        list,
+        user: req.user,
+    })
 })
 
 // Update like/dislike attribute of a list
