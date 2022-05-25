@@ -116,21 +116,7 @@ router.get('/new', isLoggedIn, async (req, res) => {
 })
 
 router.post('/', isLoggedIn, async (req, res) => {
-    // Verify that list with that name does not exist for this author
-    const [exists, existsError] = await handle(List.findOne({ author: req.user._id, name: req.body.name, deleted: false }))
-    if (existsError) {
-        console.log(`Error in POST /list: List already exists: ${existsError}}`)
-        req.flash('error', 'A list with that name already exists.')
-        return res.status(500).render('server-error', { user: req.user })
-    }
-
-    if (exists !== null) {
-        console.log("Error: A list with that name already exists.")
-        req.flash('error', 'A list with that name already exists.')
-        return res.redirect('back')
-    }
-
-    // Else, create list
+    // Create list
     const list = new List({ name: req.body.name, description: req.body.description, author: req.user._id })
 
     // Passing ids from selectedGames to the actual list
@@ -284,20 +270,6 @@ router.put('/:id', isLoggedIn, async (req, res) => {
     }
 
     foundList.name = req.body.name
-
-    // Verify that list with that name does not exist for this author
-    const [exists, existsError] = await handle(List.findOne({ author: req.user._id, name: foundList.name, deleted: false }))
-    if (existsError) {
-        console.log(`Error in POST /list: List already exists: ${existsError}}`)
-        return res.status(500).render('server-error', { user: req.user })
-    }
-
-    if (exists !== null) {
-        console.log("Error: A list with that name already exists.")
-        req.flash('error', 'A list with that name already exists.')
-        return res.redirect('back')
-    }
-
     foundList.description = req.body.description
     foundList.games = req.body.games
 
