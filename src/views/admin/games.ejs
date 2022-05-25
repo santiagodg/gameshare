@@ -89,20 +89,15 @@
                 return Promise.resolve(updated_item)
             },
 
-            deleteItem: async (item) => {
-                response = await axios.delete(`/admin/games/${item._id}`, item)
-
-                if (response.status !== 200) {
-                    return Promise.reject()
-                }
-
-                return Promise.resolve()
+            deleteItem: async (_item) => {
+                return Promise.reject()
             }
         },
 
         width: '100%',
         inserting: true,
         editing: true,
+        deleteConfirm: 'Hard-deleting games is not allowed, enable the "deleted" property of the game instead which will soft-delete it.',
     })
 </script>
 <%- include (".././partials/footer") %>

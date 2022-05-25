@@ -46,7 +46,7 @@
   </div>
 </div>
 <script>
-    const games = <%- JSON.stringify(games.sort((a, b) => (a.name <= b.name ? -1 : 1))) %>;
+    const games = <%- JSON.stringify(games.filter(game => !game.deleted).sort((a, b) => (a.name <= b.name ? -1 : 1))) %>;
 
     let selectableGames = games.slice()
     let addedGames = []

@@ -44,12 +44,14 @@
     </div>
   </div>
 </div>
+<% games = games.filter(game => !game.deleted) %>
+<% list.games = list.games.filter(game => !game.deleted) %>
 <script>
     const games = <%- JSON.stringify(games.sort((a, b) => (a.name <= b.name ? -1 : 1))) %>;
 
     let addedGames = <%- JSON.stringify(list.games) %>;
-    let selectableGames = <%- (() => { 
-      result = games.sort((a, b) => (a.name <= b.name ? -1 : 1)).slice()
+    let selectableGames = <%- (() => {
+      result = games.slice()
       for (const listGame of list.games) {
         const index = games.findIndex(game => game._id.equals(listGame._id))
         result.splice(index, 1)
