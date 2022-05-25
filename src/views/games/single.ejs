@@ -116,12 +116,21 @@
                                         <div class="row">
                                             <div class="col mr-auto d-flex flex-column justify-content-end">
                                                 <p class="mb-2" style="font-size: 14px;">
-                                                    <span>Reviewed by</span>
-                                                    <span class="pink-text font-weight-bold"><%= review.author.deleted ? 'deleted' : review.author.username %></span>
-                                                    <span>on <%=review.createdAt.toDateString()%> </span>
-                                                    <% if (review.rating) { %>
-                                                        <span class="pink-text">&nbsp;&nbsp;• </span>
-                                                        <span>&nbsp;&#9733;&nbsp;<%=review.rating.score%></span>
+                                                    <% var score = -1 %>
+                                                    <% game.ratings.forEach(rating => { %>
+                                                        <% if (review.author._id.equals(rating.author._id)) { %>
+                                                            <% score = rating.score %>
+                                                        <% } %>
+                                                    <% }) %>
+                                                    <% if (score != -1) { %>
+                                                        <span>Reviewed by</span>
+                                                        <span class="pink-text font-weight-bold"><%= review.author.deleted ? 'deleted' : review.author.username %></span>
+                                                        <span>on <%=review.createdAt.toDateString()%> </span>
+                                                        <span>&nbsp;<span class="pink-text">&#9733;</span> <%=score%></span>
+                                                    <% } else { %>
+                                                        <span>Reviewed by</span>
+                                                        <span class="pink-text font-weight-bold"><%= review.author.deleted ? 'deleted' : review.author.username %></span>
+                                                        <span>on <%=review.createdAt.toDateString()%> </span>
                                                     <% } %>
                                                 </p>
                                             </div>

@@ -90,11 +90,12 @@ router.get('/:id', isLoggedIn, async (req, res) => {
                 },
                 {
                     path: 'ratings',
-                    populate: 'author',
-                }
+                    populate: ['author', 'score']
+                },
             ])
             .exec()
     );
+    console.log(game.ratings)
 
     if (gameError || game === null) {
         console.error(`Error in GET /games/${req.params.id}: Failed to find game: ${JSON.stringify(gameError, null, 2)}`)
