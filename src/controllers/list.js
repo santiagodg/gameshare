@@ -95,6 +95,8 @@ router.get('/', isLoggedIn, async (req, res) => {
                 .exec()
         )
 
+        // console.debug(`DEBUG: /list: received no filter and no search`)
+
         if (listsError) {
             return res.status(400).render('bad-request', { user: req.user })
         }

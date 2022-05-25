@@ -5,7 +5,7 @@
         <div class="col">
             <div class="row justify-content-between">
                 <div class="col mx-2">
-                    <p class="mb-0">List by <span class="pink-text font-weight-bold"><%= list.author.username %></span></p>
+                    <p class="mb-0">List by <span class="pink-text font-weight-bold"><%= list.author.deleted ? 'deleted' : list.author.username %></span></p>
                     <p>Created on <span><%= list.createdAt.toDateString() %></span></p>
                 </div>
                 <% if ( user.isAdmin || user._id.equals(list.author._id) ) { %>
@@ -68,7 +68,7 @@
                 <% list.comments.forEach(comment => { %>
                     <div class="row my-2 px-2">
                         <div class="col-2">
-                            <p class="pink-text mb-0 font-weight-bold"><%= comment.author.username %></p>
+                            <p class="pink-text mb-0 font-weight-bold"><%= comment.author.deleted ? 'deleted' : comment.author.username %></p>
                             <p><%= comment.createdAt.toDateString() %></p>
                         </div>
                         <div class="col-8">

@@ -103,7 +103,7 @@
                                             <div class="col mr-auto d-flex flex-column justify-content-end">
                                                 <p class="mb-2" style="font-size: 14px;">
                                                     <span>Reviewed by</span>
-                                                    <span class="pink-text font-weight-bold"><%= review.author.username %></span>
+                                                    <span class="pink-text font-weight-bold"><%= review.author.deleted ? 'deleted' : review.author.username %></span>
                                                     <span>on <%=review.createdAt.toDateString()%> </span>
                                                     <% if (review.rating) { %>
                                                         <span class="pink-text">&nbsp;&nbsp;• </span>

@@ -128,12 +128,12 @@ router.put('/:id/rating', isLoggedIn, async (req, res) => {
         return;
     }
 
-    console.debug(`DEBUG: PUT /games/${req.params.id}/rating: game: ${JSON.stringify(game, null, 2)}`)
+    // console.debug(`DEBUG: PUT /games/${req.params.id}/rating: game: ${JSON.stringify(game, null, 2)}`)
 
     // Create new rating or overwrite
     const ratingIndex = game.ratings.findIndex(rating => rating.author._id.equals(req.user._id))
 
-    console.debug(`DEBUG: PUT /games/${req.params.id}/rating: ratingIndex: ${JSON.stringify(ratingIndex, null, 2)}`)
+    // console.debug(`DEBUG: PUT /games/${req.params.id}/rating: ratingIndex: ${JSON.stringify(ratingIndex, null, 2)}`)
 
     let newRating;
     if (ratingIndex === -1) {
@@ -145,17 +145,17 @@ router.put('/:id/rating', isLoggedIn, async (req, res) => {
             return
         }
 
-        console.debug(`DEBUG: PUT /games/${req.params.id}/rating: savedRating: ${JSON.stringify(savedRating, null, 2)}`)
+        // console.debug(`DEBUG: PUT /games/${req.params.id}/rating: savedRating: ${JSON.stringify(savedRating, null, 2)}`)
 
         newRating = savedRating
     } else {
         const previouslyAuthoredRating = game.ratings[ratingIndex]
 
-        console.debug(`DEBUG: PUT /games/${req.params.id}/rating: previouslyAuthoredRating: ${JSON.stringify(previouslyAuthoredRating, null, 2)}`)
+        // console.debug(`DEBUG: PUT /games/${req.params.id}/rating: previouslyAuthoredRating: ${JSON.stringify(previouslyAuthoredRating, null, 2)}`)
 
         game.ratings.splice(ratingIndex, 1)
 
-        console.debug(`DEBUG: PUT /games/${req.params.id}/rating: game.ratings: ${JSON.stringify(game.ratings, null, 2)}`)
+        // console.debug(`DEBUG: PUT /games/${req.params.id}/rating: game.ratings: ${JSON.stringify(game.ratings, null, 2)}`)
 
         previouslyAuthoredRating.score = req.body.score
         const [savedRating, error] = await handle(previouslyAuthoredRating.save());
@@ -165,7 +165,7 @@ router.put('/:id/rating', isLoggedIn, async (req, res) => {
             return
         }
 
-        console.debug(`DEBUG: PUT /games/${req.params.id}/rating: savedRating: ${JSON.stringify(savedRating, null, 2)}`)
+        // console.debug(`DEBUG: PUT /games/${req.params.id}/rating: savedRating: ${JSON.stringify(savedRating, null, 2)}`)
 
         newRating = savedRating
     }
@@ -177,7 +177,7 @@ router.put('/:id/rating', isLoggedIn, async (req, res) => {
         ratingSum += rating.score
     })
 
-    console.debug(`DEBUG: PUT /games/${req.params.id}/rating: game.ratings: ${JSON.stringify(game.ratings, null, 2)}`)
+    // console.debug(`DEBUG: PUT /games/${req.params.id}/rating: game.ratings: ${JSON.stringify(game.ratings, null, 2)}`)
 
     // Save game
     game.avgRating = ratingSum / game.ratings.length
@@ -188,7 +188,7 @@ router.put('/:id/rating', isLoggedIn, async (req, res) => {
         return
     }
 
-    console.debug(`DEBUG: PUT /games/${req.params.id}/rating: game.avgRating: ${JSON.stringify(game.avgRating, null, 2)}`)
+    // console.debug(`DEBUG: PUT /games/${req.params.id}/rating: game.avgRating: ${JSON.stringify(game.avgRating, null, 2)}`)
 
     // Redirect to games/:id
     res.redirect(`/games/${req.params.id}`);

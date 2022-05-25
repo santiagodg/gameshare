@@ -115,7 +115,7 @@ router.delete('/games/:gameID', isLoggedIn, isAdmin, async (req, res) => {
 });
 
 router.get("/users", isLoggedIn, isAdmin, async (req, res) => {
-    const [users, usersError] = await handle(UserModel.find({ _id : { $ne: req.user._id }}).exec());
+    const [users, usersError] = await handle(UserModel.find({ _id: { $ne: req.user._id } }).exec());
 
     if (usersError) {
         console.log(usersError);
@@ -200,15 +200,5 @@ router.put('/users/:userID', isLoggedIn, isAdmin, async function (req, res) {
 
     res.send(existent1User)
 })
-
-router.delete('/users/:userID', isLoggedIn, isAdmin, async (req, res) => {
-    const opResult = await UserModel.deleteOne({ _id: req.params.userID }).exec();
-
-    if (opResult.modifiedCount < 1) {
-        return res.status(404).redirect('/admin/users');
-    }
-
-    res.sendStatus(200);
-});
 
 module.exports = router;
