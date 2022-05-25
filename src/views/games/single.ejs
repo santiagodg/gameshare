@@ -83,7 +83,21 @@
                         </div>
                         <div class="dropdown-divider m-0"></div>
                         <div class="text-center pb-4">
-                            <p class="h5">Leave a review</p>
+                            <% if(game.reviews.length !== 0){ %>
+                                <% var found = false %>
+                                <% game.reviews.forEach(review => { %>
+                                    <% if (review.author._id.equals(user._id)) { %>
+                                        <% found = true %>
+                                    <% } %>
+                                <% }) %> 
+                                <% if (found) { %>
+                                    <p class="h5">Update review</p>
+                                <% } else { %>
+                                    <p class="h5">Leave review</p>
+                                <% } %>                               
+                            <% } else{ %>
+                                <p class="h5">Leave review</p>
+                            <% } %>
                             <a class="btn btn-primary text-uppercase font-weight-bold" href="/games/<%= game._id %>/review">Review</a>
                         </div>
                     </div>
