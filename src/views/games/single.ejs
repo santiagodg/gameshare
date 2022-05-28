@@ -6,8 +6,13 @@
             <img class="single-img shadow" src="<%= game.image %>">
             <% if (game.avgRating !== null) { %>
                 <div class="text-center mt-4 mb-3">
-                    <p class="mb-0">Rating</p>
-                    <p class="h4 text-light"><%= game.avgRating.toFixed(2) %></p>
+                    <p class="mb-0">Average Rating (<%= game.ratings.length %>)</p>
+                    <p class="h4 text-light"><%= game.avgRating.toFixed(2)%></p>
+                </div>
+            <% } else { %>
+                <div class="text-center mt-4 mb-3">
+                    <p class="mb-0">Average Rating</p>
+                    <p class="h4 text-light">No Ratings</p>
                 </div>
             <% } %>
             <div class="text-center">
@@ -105,8 +110,8 @@
             </div>
             <div class="row">
                 <div class="col">
+                    <hr class="mt-5" style="background-color: rgb(174, 134, 191);">
                     <% if (game.reviews.length !== 0) { %>
-                        <hr class="mt-5" style="background-color: rgb(174, 134, 191);">
                         <div class="row mt-5">
                             <div class="col">
                                 <p class="h4">Reviews</p>
@@ -148,13 +153,17 @@
                                             <% } %>
                                         </div>
                                         <% if (review.text && review.text != "") { %>
-                                            <p class="mb-0"><%= review.text %></p>
+                                            <p class="mb-0 mt-1"><%= review.text %></p>
                                         <% } %>
                                     </div>
-                                    
                                     <div class="dropdown-divider"></div>
                                 <% }) %>
                             </div>
+                        </div>
+                    <% } else { %>
+                        <div class="pt-4 text-center">
+                            <h4>No reviews.</h4>
+                            <p class="">This game doesn't have any reviews yet.</p>
                         </div>
                     <% } %>
                 </div>
