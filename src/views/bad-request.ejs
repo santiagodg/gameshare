@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-    <title>400 Error | GameShare</title>
-</head>
-<body>
-    <div class="container text-center text-light mb-5">
-        <h1 class="error">400 Bad Request</h1>
+<%- include ("./partials/header") %>
+  <title>400 Error | GameShare</title>
+  <%- include ("./partials/loginNavbar") %>
+    <div class="container text-center text-light my-4 h-100">
+        <h1 class="error mt-4 pt-4">400 Bad Request</h1>
+        <p>Oops, your request resulted in an error.</p>
+        <hr style="height: 420px;">
     </div>
-</body>
-</html>
+<%- include ("./partials/footer") %>

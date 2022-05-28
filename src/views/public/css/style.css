@@ -4,7 +4,6 @@
     --bg-color-2: rgba(255, 255, 255, 0.10);
     --bg-color-3: rgba(255, 255, 255, 0.15);
     --primary: rgb(166, 114, 189) !important;
-    /* --primary: rgb(239, 154, 154) !important; */
     --primary-50: rgba(239, 154, 154, 0.5) !important;
     --secondary: rgb(144, 91, 167) !important;
     --font-color-emphasis: rgba(255, 255, 255, 0.87);
@@ -259,8 +258,6 @@ input[type="email"], input[type="text"], input[type="password"], input[type="use
     
 .rating > label {
     position: relative;
-    /* width: 1.1em;
-    font-size: 15vw; */
     width: 1.1em;
     font-size: 25px;
     color: var(--primary);
