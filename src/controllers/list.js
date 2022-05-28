@@ -349,7 +349,7 @@ router.delete('/:id', isLoggedIn, async (req, res) => {
     }
 
     // console.debug(`DEBUG: DELETE /list/${req.params.id}: deleteListResult: ${JSON.stringify(deleteListResult, null, 2)}`)
-
+    req.flash('success', 'List deleted successfully.')
     res.redirect(`/list`)
 })
 
