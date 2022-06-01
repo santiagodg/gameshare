@@ -123,7 +123,7 @@ router.put('/:id/rating', isLoggedIn, async (req, res) => {
         ]).exec()
     );
 
-    if (gameError || game === null) {
+    if (gameError || game == null) {
         console.error(`Error in PUT /games/${req.params.id}/rating: Failed to find game: ${JSON.stringify(gameError, null, 2)}`)
         res.status(400).render('bad-request', { user: req.user });
         return;
@@ -135,7 +135,12 @@ router.put('/:id/rating', isLoggedIn, async (req, res) => {
     const ratingIndex = game.ratings.findIndex(rating => rating.author._id.equals(req.user._id))
 
     // console.debug(`DEBUG: PUT /games/${req.params.id}/rating: ratingIndex: ${JSON.stringify(ratingIndex, null, 2)}`)
-
+    
+    // If user does not select stars and clicks on submit
+    if(req.body.score === undefined) {
+        req.flash('error', 'You need to select a rating to submit')
+        return res.redirect('back')
+    }
     let newRating;
     if (ratingIndex === -1) {
         const rating = new RatingModel(req.body)
