@@ -11,8 +11,12 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-    const games = <%- JSON.stringify(games) %>
-
+    var games = <%- JSON.stringify(games) %>
+    games.map(function(e){
+        if(e.avgRating){
+            e.avgRating = e.avgRating.toFixed(2)
+        }
+    })
     $("#jsGrid").jsGrid({
         fields: [
             {
