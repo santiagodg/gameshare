@@ -326,7 +326,8 @@ router.delete('/:id/review', isLoggedIn, async (req, res) => {
     }
 
     // Find review to remove
-    const reviewIndex = foundGame.reviews.findIndex(review => review.author._id.equals(req.user._id) && review._id.equals(req.body.reviewId))
+    // Not checking authorid with req.user._id because admins should also be able to remove them
+    const reviewIndex = foundGame.reviews.findIndex(review => review._id.equals(req.body.reviewId))
     if (reviewIndex === -1) {
         console.error(`Error in DELETE /games/${req.params.id}/review: failed to find review ${req.body.reviewId} authored by user ${req.user._id} in reviews of game ${foundGame._id}`)
         res.status(400).render('bad-request', { user: req.user })
