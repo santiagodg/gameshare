@@ -93,7 +93,7 @@
                 </div>
               </div>
               <p class="mb-0">List created by <span class="pink-text"><%= list.author.deleted ? 'deleted' : list.author.username %></span></p>
-              <% if (list.games.length > 0) { %>
+              <% if (list.games && list.games.length > 0) { %>
                 <div class="p-0 mb-3 mt-3">
                   <% list.games = list.games.filter(game => !game.deleted) %>
                   <% let i = 0 %>

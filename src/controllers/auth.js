@@ -60,6 +60,12 @@ router.get('/login', (req, res) => {
 
 // Validate login information and start session
 router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
+    // If user was deleted they should not log in
+    if(req.isAuthenticated && req.user.deleted){
+        req.logout()
+        req.flash('error', 'Password or user is incorrect')
+        return res.redirect('/login')
+    }
     console.log("Logged in")
     req.flash('success', 'Welcome back, ' + req.user.username + '!');
     // TO-DO: Add directory
