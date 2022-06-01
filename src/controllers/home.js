@@ -43,7 +43,8 @@ router.get('/', async function (req, res) {
                     return
                 }
 
-                const [listsPopulated, populatedError] = await handle(List.populate(lists, ['author', 'likes', 'games']))
+                const [listsPopulated, populatedError] = await handle(List.populate(lists, ['author', 'likes', 'games', 'comments']))
+                
 
                 if (populatedError) {
                     res.status(404).render('not-found')
